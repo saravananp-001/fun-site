@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>a question for you ♥</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>♥</text></svg>" />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg1:#fbe9ef; --bg2:#f6dce6; --bg3:#fdf1f4;
+    --ink:#5c1730; --ink-soft:#8a5468;
+    --pink:#e0357f; --pink-soft:#f2a8c6; --pink-pale:#fce4ee;
+    --card:#fdfaf7; --shadow:0 24px 60px rgba(160,60,100,.18);
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;
+    color:var(--ink); background:linear-gradient(160deg,var(--bg1),var(--bg3) 45%,var(--bg2));
+    min-height:100dvh; display:grid; place-items:center; padding:20px; overflow-x:hidden;
+  }
+  /* floating hearts */
+  #petals{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+  .petal{position:absolute;top:-40px;font-size:14px;opacity:.5;animation:fall linear forwards}
+  @keyframes fall{to{transform:translateY(110vh) rotate(360deg);opacity:0}}
+
+  .stage{position:relative;z-index:2;width:100%;max-width:560px}
+  .card{
+    background:var(--card); border-radius:26px; padding:44px 36px; text-align:center;
+    box-shadow:var(--shadow); border:1px solid rgba(255,255,255,.7);
+    animation:pop .45s cubic-bezier(.2,1.1,.4,1);
+  }
+  @keyframes pop{from{opacity:0;transform:translateY(14px) scale(.97)}to{opacity:1;transform:none}}
+  .screen{display:none}
+  .screen.active{display:block}
+
+  h1{font-family:'Playfair Display',Georgia,serif;font-size:clamp(26px,5.2vw,36px);line-height:1.25;margin:0 0 10px;font-weight:700}
+  .sub{font-family:'Playfair Display',Georgia,serif;font-style:italic;color:var(--ink-soft);font-size:15px;line-height:1.6;margin:0 0 26px}
+  .avatar{width:96px;height:96px;border-radius:20px;object-fit:cover;margin:0 auto 22px;display:block;background:#eadfe4;box-shadow:0 8px 24px rgba(160,60,100,.18)}
+  .emoji-badge{width:96px;height:96px;border-radius:22px;display:grid;place-items:center;font-size:46px;margin:0 auto 22px;background:#fff0f5;box-shadow:0 8px 24px rgba(160,60,100,.16)}
+
+  .btn{
+    font-family:'Playfair Display',Georgia,serif; font-size:17px; border:0; cursor:pointer;
+    padding:15px 34px; border-radius:999px; background:var(--pink); color:#fff; font-weight:600;
+    transition:transform .15s, box-shadow .15s, background .2s;
+    box-shadow:0 8px 22px rgba(224,53,127,.32);
+  }
+  .btn:hover{transform:translateY(-2px);box-shadow:0 12px 26px rgba(224,53,127,.4)}
+  .btn:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none}
+  .btn.soft{background:var(--pink-soft);color:#7a2148;box-shadow:0 8px 22px rgba(242,168,198,.5)}
+  .btn.wide{width:100%;margin-top:8px}
+
+  .ask-row{position:relative;height:120px;margin-top:8px}
+  #yesBtn{position:absolute;left:14%;top:26px}
+  #noBtn{
+    position:absolute; left:58%; top:6px; background:#cbb2dd; color:#4a2a5e;
+    box-shadow:0 8px 22px rgba(203,178,221,.5); transition:left .22s ease, top .22s ease, transform .15s;
+  }
+  #yesBtn{transition:transform .2s, font-size .2s, padding .2s}
+
+  .field{text-align:left;margin-bottom:18px}
+  .label{font-family:'Playfair Display',serif;font-weight:600;font-size:15px;display:block;margin-bottom:8px}
+  input[type=date],select{
+    width:100%;padding:14px 15px;border-radius:12px;border:1px solid #e6d3db;background:#fff;
+    font-family:Inter,sans-serif;font-size:15px;color:var(--ink);outline:none;
+  }
+  input[type=date]:focus,select:focus{border-color:var(--pink-soft);box-shadow:0 0 0 3px var(--pink-pale)}
+
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:8px 0 24px}
+  .tile{
+    background:#fff;border:1.5px solid #efe1e7;border-radius:16px;padding:16px 8px;cursor:pointer;
+    transition:all .16s; font-size:13px; color:var(--ink-soft); font-weight:500;
+  }
+  .tile span{display:block;font-size:30px;margin-bottom:6px}
+  .tile:hover{transform:translateY(-3px);border-color:var(--pink-soft)}
+  .tile.sel{border-color:var(--pink);background:#fff4f8;color:var(--pink);box-shadow:0 6px 18px rgba(224,53,127,.16)}
+
+  .hearts{color:var(--pink-soft);letter-spacing:7px;font-size:18px;margin:6px 0 22px}
+  .recap{background:#fff4f8;border-radius:16px;padding:18px;margin:20px 0 6px;text-align:left;font-size:14.5px;line-height:1.9;color:var(--ink-soft)}
+  .recap b{color:var(--ink);font-weight:600}
+  .foot{margin-top:26px;font-size:11.5px;color:#c39aab;letter-spacing:.4px}
+  .err{color:#c0245c;font-size:13px;margin-top:12px;min-height:18px}
+
+  /* top-right controls */
+  .ctrl{position:fixed;top:16px;right:16px;z-index:5;display:flex;gap:8px}
+  .ctrl button{
+    background:rgba(255,255,255,.85);border:1px solid #f0dbe4;border-radius:999px;
+    width:40px;height:40px;font-size:17px;cursor:pointer;box-shadow:0 4px 14px rgba(160,60,100,.12)
+  }
+  .share{display:flex;gap:8px;margin-top:14px}
+  .share input{flex:1;padding:11px 12px;border-radius:10px;border:1px solid #e6d3db;font-size:12.5px;color:var(--ink-soft);background:#fff}
+  .share button{padding:0 16px;border-radius:10px;border:0;background:var(--pink-soft);color:#7a2148;font-weight:600;cursor:pointer}
+  canvas#confetti{position:fixed;inset:0;pointer-events:none;z-index:9}
+  @media(max-width:480px){.card{padding:34px 22px}.grid{gap:9px}#yesBtn{left:8%}#noBtn{left:56%}}
+</style>
+</head>
+<body>
+<div id="petals"></div>
+<canvas id="confetti"></canvas>
+<div class="ctrl">
+  <button id="musicBtn" title="music">🔈</button>
+</div>
+
+<div class="stage">
+  <div class="card">
+
+    <!-- 1. THE ASK -->
+    <section class="screen active" id="s1">
+      <img class="avatar" id="askPhoto" alt="" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='96' height='96'><rect width='96' height='96' fill='%23eadfe4'/><text x='48' y='62' font-size='42' text-anchor='middle'>🐶</text></svg>" />
+      <h1>🌸 Will you go on a date with me? 🌸</h1>
+      <div class="ask-row">
+        <button class="btn" id="yesBtn">YES ♥</button>
+        <button class="btn" id="noBtn">no 🥀</button>
+      </div>
+    </section>
+
+    <!-- 2. SURPRISE -->
+    <section class="screen" id="s2">
+      <div class="emoji-badge">🧽</div>
+      <h1>WAIT YOU ACTUALLY SAID YES?? 😭</h1>
+      <p class="sub">I was so ready for you to say no 🥹</p>
+      <button class="btn soft" data-go="s3">okay okay! →</button>
+    </section>
+
+    <!-- 3. WHEN -->
+    <section class="screen" id="s3">
+      <div class="emoji-badge">📅</div>
+      <h1>So... when are you free?</h1>
+      <div class="field">
+        <label class="label" for="dateIn">Pick a Day 📅</label>
+        <input type="date" id="dateIn" />
+      </div>
+      <div class="field">
+        <label class="label" for="timeIn">What Time? 🕐</label>
+        <select id="timeIn">
+          <option value="">Select a time...</option>
+        </select>
+      </div>
+      <button class="btn wide" id="whenBtn" disabled>set the date! ♥</button>
+      <div class="err" id="whenErr"></div>
+    </section>
+
+    <!-- 4. FOOD -->
+    <section class="screen" id="s4">
+      <h1>What are we feeling? 🍽️✨</h1>
+      <p class="sub">pick your vibe</p>
+      <div class="grid" id="foodGrid"></div>
+      <button class="btn wide" id="foodBtn" disabled>lock it in ♥</button>
+      <div class="err" id="foodErr"></div>
+    </section>
+
+    <!-- 5. FINAL -->
+    <section class="screen" id="s5">
+      <h1>glad you didn't say no.<br />be ready by 6, I'm coming to get you 🚗</h1>
+      <p class="sub">P.S. normal people text. I made a website for you. no big deal.</p>
+      <div class="hearts">♥ ♥ ♥ ♥ ♥</div>
+      <div class="recap" id="recap"></div>
+      <button class="btn wide" id="acceptBtn">👆 I accept 🎁</button>
+      <div class="err" id="saveMsg"></div>
+      <div class="share">
+        <input id="shareUrl" readonly />
+        <button id="copyBtn">copy</button>
+      </div>
+      <div class="foot">made with ♥ · not on Replit</div>
+    </section>
+
+  </div>
+</div>
+
+<script>
+/* ---------------- state ---------------- */
+const answers = { date:'', time:'', food:'', name:new URLSearchParams(location.search).get('to') || '' };
+
+/* ---------------- petals ---------------- */
+const petalBox = document.getElementById('petals');
+setInterval(() => {
+  if (document.hidden) return;
+  const p = document.createElement('div');
+  p.className = 'petal';
+  p.textContent = ['♥','🌸','♡'][Math.floor(Math.random()*3)];
+  p.style.left = Math.random()*100 + 'vw';
+  p.style.fontSize = (10 + Math.random()*14) + 'px';
+  p.style.animationDuration = (7 + Math.random()*7) + 's';
+  petalBox.appendChild(p);
+  setTimeout(() => p.remove(), 15000);
+}, 550);
+
+/* ---------------- screens ---------------- */
+function go(id){
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const el = document.getElementById(id);
+  el.classList.add('active');
+  el.style.animation = 'none'; void el.offsetWidth; el.style.animation = '';
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+document.querySelectorAll('[data-go]').forEach(b => b.onclick = () => go(b.dataset.go));
+
+/* ---------------- screen 1: dodging no ---------------- */
+const noBtn = document.getElementById('noBtn');
+const yesBtn = document.getElementById('yesBtn');
+let dodges = 0;
+const nopes = ['no 🥀','are you sure?','really??','think again 🥺','last chance!','pretty please','my heart 💔','you cant click me','ok this is rude','😭😭😭'];
+
+function dodge(){
+  const row = noBtn.parentElement.getBoundingClientRect();
+  const w = noBtn.offsetWidth, h = noBtn.offsetHeight;
+  const x = Math.random() * Math.max(10, row.width - w);
+  const y = Math.random() * Math.max(10, row.height - h);
+  noBtn.style.left = x + 'px';
+  noBtn.style.top  = y + 'px';
+  noBtn.textContent = nopes[Math.min(++dodges, nopes.length - 1)];
+  const scale = Math.min(1 + dodges * 0.13, 2.3);
+  yesBtn.style.transform = `scale(${scale})`;
+  if (dodges > 3) noBtn.style.transform = `scale(${Math.max(0.55, 1 - dodges*0.06)})`;
+}
+noBtn.addEventListener('mouseenter', dodge);
+noBtn.addEventListener('touchstart', e => { e.preventDefault(); dodge(); }, {passive:false});
+noBtn.addEventListener('click', e => { e.preventDefault(); dodge(); });
+
+yesBtn.onclick = () => { burst(140); startMusic(); go('s2'); };
+
+/* ---------------- screen 3: when ---------------- */
+const dateIn = document.getElementById('dateIn');
+const timeIn = document.getElementById('timeIn');
+const whenBtn = document.getElementById('whenBtn');
+
+dateIn.min = new Date().toISOString().slice(0,10);
+for (let h = 8; h <= 22; h++){
+  for (const m of ['00','30']){
+    const v = String(h).padStart(2,'0') + ':' + m;
+    const ampm = h < 12 ? 'AM' : 'PM';
+    const h12 = h % 12 === 0 ? 12 : h % 12;
+    timeIn.insertAdjacentHTML('beforeend', `<option value="${v}">${h12}:${m} ${ampm}</option>`);
+  }
+}
+function checkWhen(){ whenBtn.disabled = !(dateIn.value && timeIn.value); }
+dateIn.oninput = timeIn.oninput = checkWhen;
+whenBtn.onclick = () => {
+  answers.date = dateIn.value; answers.time = timeIn.value;
+  burst(60); go('s4');
+};
+
+/* ---------------- screen 4: food ---------------- */
+const FOODS = [
+  ['🍕','Pizza'], ['🍣','Sushi'], ['🍔','Burgers'],
+  ['🍝','Pasta'], ['🌮','Tacos'], ['🍜','Ramen']
+];
+const grid = document.getElementById('foodGrid');
+const foodBtn = document.getElementById('foodBtn');
+FOODS.forEach(([e,n]) => {
+  const t = document.createElement('div');
+  t.className = 'tile'; t.innerHTML = `<span>${e}</span>${n}`;
+  t.onclick = () => {
+    grid.querySelectorAll('.tile').forEach(x => x.classList.remove('sel'));
+    t.classList.add('sel'); answers.food = n; foodBtn.disabled = false;
+  };
+  grid.appendChild(t);
+});
+foodBtn.onclick = () => { burst(90); showFinal(); };
+
+/* ---------------- screen 5: final ---------------- */
+function pretty(){
+  const d = new Date(answers.date + 'T00:00:00');
+  const day = d.toLocaleDateString(undefined,{weekday:'long', month:'long', day:'numeric'});
+  const [H,M] = answers.time.split(':');
+  const h12 = (+H % 12) === 0 ? 12 : (+H % 12);
+  return { day, time: `${h12}:${M} ${+H < 12 ? 'AM' : 'PM'}` };
+}
+function showFinal(){
+  const p = pretty();
+  document.getElementById('recap').innerHTML =
+    `📅 <b>${p.day}</b><br />🕐 <b>${p.time}</b><br />🍽️ <b>${answers.food}</b>`;
+  document.getElementById('shareUrl').value = location.origin + location.pathname;
+  go('s5');
+}
+
+const acceptBtn = document.getElementById('acceptBtn');
+const saveMsg = document.getElementById('saveMsg');
+acceptBtn.onclick = async () => {
+  acceptBtn.disabled = true; acceptBtn.textContent = 'saving... ♥';
+  try {
+    const r = await fetch('/api/response', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(answers)
+    });
+    if (!r.ok) throw new Error('bad status ' + r.status);
+    await r.json();
+    acceptBtn.textContent = "it's a date 🎉";
+    saveMsg.style.color = '#2e8b57';
+    saveMsg.textContent = 'Noted! we will meet on ' + pretty().day + ' at ' + pretty().time + '.';
+    burst(220);
+  } catch (err) {
+    acceptBtn.disabled = false; acceptBtn.textContent = '👆 I accept 🎁';
+    saveMsg.style.color = '#c0245c';
+    saveMsg.textContent = 'Could not save — is the server running? (' + err.message + ')';
+  }
+};
+
+document.getElementById('copyBtn').onclick = async () => {
+  const inp = document.getElementById('shareUrl');
+  try { await navigator.clipboard.writeText(inp.value); }
+  catch { inp.select(); document.execCommand('copy'); }
+  const b = document.getElementById('copyBtn');
+  b.textContent = 'copied!'; setTimeout(() => b.textContent = 'copy', 1600);
+};
+
+/* ---------------- confetti ---------------- */
+const cv = document.getElementById('confetti'), ctx = cv.getContext('2d');
+let bits = [];
+function size(){ cv.width = innerWidth; cv.height = innerHeight; }
+size(); addEventListener('resize', size);
+function burst(n){
+  const colors = ['#e0357f','#f2a8c6','#ffd166','#9b5de5','#fff','#ff85a1'];
+  for (let i = 0; i < n; i++){
+    bits.push({
+      x: innerWidth/2, y: innerHeight/2,
+      vx:(Math.random()-.5)*13, vy:(Math.random()-.9)*13,
+      s: 4+Math.random()*7, c: colors[Math.floor(Math.random()*colors.length)],
+      r: Math.random()*Math.PI, vr:(Math.random()-.5)*.3, life:1
+    });
+  }
+}
+(function loop(){
+  ctx.clearRect(0,0,cv.width,cv.height);
+  bits = bits.filter(b => b.life > 0);
+  for (const b of bits){
+    b.vy += .32; b.x += b.vx; b.y += b.vy; b.r += b.vr; b.life -= .008;
+    ctx.save(); ctx.translate(b.x,b.y); ctx.rotate(b.r);
+    ctx.globalAlpha = Math.max(0,b.life); ctx.fillStyle = b.c;
+    ctx.fillRect(-b.s/2,-b.s/2,b.s,b.s*.62); ctx.restore();
+  }
+  requestAnimationFrame(loop);
+})();
+
+/* ---------------- music (generated, no files needed) ---------------- */
+let audioCtx = null, musicOn = false, musicTimer = null;
+const musicBtn = document.getElementById('musicBtn');
+const MELODY = [523.25,659.25,783.99,659.25,587.33,698.46,880.00,698.46];
+function startMusic(){
+  if (musicOn) return;
+  try {
+    audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+    audioCtx.resume();
+    musicOn = true; musicBtn.textContent = '🔊';
+    let i = 0;
+    const tick = () => {
+      const now = audioCtx.currentTime;
+      const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+      o.type = 'triangle'; o.frequency.value = MELODY[i++ % MELODY.length];
+      g.gain.setValueAtTime(0, now);
+      g.gain.linearRampToValueAtTime(.06, now + .05);
+      g.gain.exponentialRampToValueAtTime(.0001, now + .55);
+      o.connect(g); g.connect(audioCtx.destination);
+      o.start(now); o.stop(now + .6);
+    };
+    tick(); musicTimer = setInterval(tick, 480);
+  } catch { musicOn = false; }
+}
+function stopMusic(){ clearInterval(musicTimer); musicOn = false; musicBtn.textContent = '🔈'; }
+musicBtn.onclick = () => musicOn ? stopMusic() : startMusic();
+</script>
+</body>
+</html>
