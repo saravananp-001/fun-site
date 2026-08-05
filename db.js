@@ -200,6 +200,43 @@ function sessions() {
 
 /* ------------------------------------------------------------------ */
 
+/**
+ * Wipe stored data. `what` is 'events', 'responses' or 'all'.
+ * Returns how many rows were removed from each table.
+ */
+function clear(what = 'all') {
+  const doEvents = what === 'all' || what === 'events';
+  const doResponses = what === 'all' || what === 'responses';
+  const removed = { events: 0, responses: 0 };
+
+  if (mode === 'sqlite') {
+    if (doEvents) {
+      removed.events = db.prepare('SELECT COUNT(*) AS n FROM events').get().n;
+      db.exec('DELETE FROM events');
+    }
+    if (doResponses) {
+      removed.responses = db.prepare('SELECT COUNT(*) AS n FROM responses').get().n;
+      db.exec('DELETE FROM responses');
+    }
+    // reset the AUTOINCREMENT counters so ids start at 1 again
+    try {
+      if (doEvents) db.exec("DELETE FROM sqlite_sequence WHERE name='events'");
+      if (doResponses) db.exec("DELETE FROM sqlite_sequence WHERE name='responses'");
+    } catch { /* sqlite_sequence only exists once a row has been inserted */ }
+    return removed;
+  }
+
+  if (doEvents) {
+    removed.events = readJsonl(EVENTS_FILE).length;
+    fs.writeFileSync(EVENTS_FILE, '');
+  }
+  if (doResponses) {
+    removed.responses = readJsonl(JSON_FILE).length;
+    fs.writeFileSync(JSON_FILE, '');
+  }
+  return removed;
+}
+
 function readJsonl(file) {
   if (!fs.existsSync(file)) return [];
   return fs.readFileSync(file, 'utf8')
@@ -211,7 +248,7 @@ function readJsonl(file) {
 module.exports = {
   save, list,
   saveEvent, listEvents, funnel, sessions,
-  STEPS,
+  clear, STEPS,
   get mode() { return mode; },
   DB_FILE, JSON_FILE, EVENTS_FILE,
 };

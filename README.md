@@ -68,6 +68,14 @@ If SQLite can't open the file on your system, it falls back to
 `data/responses.jsonl` + `data/events.jsonl` and keeps working. The `/admin`
 page shows which mode is active.
 
+**Clearing it:** the bottom of `/admin` has three buttons — clear tracking
+events, clear responses, or clear everything. Each asks for confirmation
+(wiping everything asks twice) and ids restart at 1 afterwards. Handy for
+resetting after you've tested, before sending the real link.
+
+The endpoint behind it is `POST /api/clear` with `{"what":"all"}` — POST only
+and key-protected, so no stray link can trigger it.
+
 **Read the data yourself:**
 
 ```bash

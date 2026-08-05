@@ -427,7 +427,7 @@ const timeIn = document.getElementById('timeIn');
 const whenBtn = document.getElementById('whenBtn');
 
 dateIn.min = new Date().toISOString().slice(0,10);
-for (let h = 8; h <= 22; h++){
+for (let h = 8; h <= 23; h++){
   for (const m of ['00','30']){
     const v = String(h).padStart(2,'0') + ':' + m;
     const ampm = h < 12 ? 'AM' : 'PM';

@@ -64,6 +64,22 @@ function authed(req) {
 const guard = (req, res, next) =>
   authed(req) ? next() : res.status(401).json({ error: 'unauthorized' });
 
+/* ---------- wipe data (POST only, key required) ---------- */
+app.post('/api/clear', guard, (req, res) => {
+  const what = (req.body && req.body.what) || 'all';
+  if (!['all', 'events', 'responses'].includes(what)) {
+    return res.status(400).json({ error: "what must be 'all', 'events' or 'responses'" });
+  }
+  try {
+    const removed = store.clear(what);
+    console.log(`🧹 cleared ${what} — ${removed.responses} responses, ${removed.events} events`);
+    res.json({ ok: true, what, removed });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'could not clear' });
+  }
+});
+
 app.get('/api/responses', guard, (req, res) => res.json(store.list()));
 app.get('/api/events',    guard, (req, res) => res.json(store.listEvents(1000)));
 app.get('/api/funnel',    guard, (req, res) =>
@@ -155,6 +171,17 @@ app.get('/admin', (req, res) => {
  .bar{background:#f6e4ec;border-radius:999px;height:9px;overflow:hidden}
  .bar span{display:block;height:100%;background:#e0357f;border-radius:999px}
  a{color:#e0357f}
+ .danger{margin-top:38px;background:#fff;border:1px solid #f3d3de;border-radius:14px;padding:16px 18px}
+ .danger h3{margin:0 0 3px;font-family:Georgia,serif;font-size:15px;font-weight:600}
+ .danger p{margin:0 0 13px;font-size:12.5px;color:#a98da0}
+ .danger .row{display:flex;gap:9px;flex-wrap:wrap;align-items:center}
+ .wipe{font-family:inherit;font-size:13px;font-weight:500;cursor:pointer;padding:9px 15px;
+   border-radius:9px;border:1px solid #e6c4d2;background:#fff;color:#8a5468;transition:.15s}
+ .wipe:hover{border-color:#e0357f;color:#e0357f;background:#fff6f9}
+ .wipe.all{background:#c0245c;border-color:#c0245c;color:#fff}
+ .wipe.all:hover{background:#a11c4c;color:#fff}
+ .wipe:disabled{opacity:.5;cursor:not-allowed}
+ #wipeMsg{font-size:12.5px;margin-left:4px}
 </style></head><body><div class="wrap">
 <h1>🎂 Treat dashboard</h1>
 <div class="meta">storage: <b>${store.mode}</b> ·
@@ -184,6 +211,50 @@ app.get('/admin', (req, res) => {
 <h2>Recent activity</h2>
 <table><thead><tr><th>Session</th><th>Step</th><th>Detail</th><th>When</th></tr></thead>
 <tbody>${eventRows}</tbody></table>
+
+<div class="danger">
+  <h3>Clear stored data</h3>
+  <p>Permanent — there's no undo. Use this to reset before sharing the link for real.</p>
+  <div class="row">
+    <button class="wipe" data-what="events">Clear tracking events (${events.length >= 150 ? '150+' : events.length})</button>
+    <button class="wipe" data-what="responses">Clear responses (${rows.length})</button>
+    <button class="wipe all" data-what="all">Clear everything</button>
+    <span id="wipeMsg"></span>
+  </div>
+</div>
+
+<script>
+const KEY = ${JSON.stringify(req.query.key || '')};
+const msg = document.getElementById('wipeMsg');
+const LABEL = { events:'tracking events', responses:'responses', all:'ALL data (responses + events)' };
+
+document.querySelectorAll('.wipe').forEach(btn => {
+  btn.onclick = async () => {
+    const what = btn.dataset.what;
+    if (!confirm('Delete ' + LABEL[what] + '?\\n\\nThis cannot be undone.')) return;
+    if (what === 'all' && !confirm('Really wipe everything? Last chance.')) return;
+
+    document.querySelectorAll('.wipe').forEach(b => b.disabled = true);
+    msg.style.color = '#a98da0'; msg.textContent = 'clearing…';
+    try {
+      const r = await fetch('/api/clear' + (KEY ? '?key=' + encodeURIComponent(KEY) : ''), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ what })
+      });
+      const j = await r.json();
+      if (!r.ok) throw new Error(j.error || r.status);
+      msg.style.color = '#2e8b57';
+      msg.textContent = 'Removed ' + j.removed.responses + ' responses, ' + j.removed.events + ' events. Reloading…';
+      setTimeout(() => location.reload(), 800);
+    } catch (e) {
+      document.querySelectorAll('.wipe').forEach(b => b.disabled = false);
+      msg.style.color = '#c0245c';
+      msg.textContent = 'Failed: ' + e.message;
+    }
+  };
+});
+</script>
 </div></body></html>`);
 });
 
