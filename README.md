@@ -53,6 +53,22 @@ doesn't double-count them). These steps are logged:
 The dashboard at `/admin` shows visits, sessions, conversion rate, a funnel bar
 chart, every visitor with how far they got, and a recent-activity log.
 
+### Device and IP
+
+Every response and every event stores the visitor's IP and user agent. The
+dashboard shows them in a **Device / IP** column, parsed into something readable
+— `📱 iPhone · WhatsApp`, `💻 Mac · Chrome`, `🖥️ Windows · Edge`. Hover the label
+to see the raw user-agent string.
+
+In-app browsers are detected too (WhatsApp, Instagram, Telegram, Facebook,
+Snapchat, LINE), which is usually how a shared link gets opened.
+
+Worth knowing: IP + user agent identify a *device*, roughly — not a person.
+Phones on mobile data share IPs and change them, and two friends with the same
+phone model look identical. If you need to know who answered, the `?to=` name
+parameter is the reliable way: send `.../?to=Priya` and it's stored with the
+response.
+
 Tracking uses `navigator.sendBeacon`, so events still arrive if they close the
 tab mid-flow. It's wrapped in try/catch — if tracking fails, the page still works.
 

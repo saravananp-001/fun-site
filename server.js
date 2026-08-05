@@ -92,6 +92,53 @@ app.get('/api/funnel',    guard, (req, res) =>
 const esc = (s) => String(s ?? '').replace(/[<>&"]/g, (c) =>
   ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;' }[c]));
 
+/**
+ * Turn a raw user-agent string into something readable, e.g.
+ *   "iPhone · WhatsApp"   "Android · Chrome"   "Mac · Safari"
+ * Deliberately small — no dependency, no fingerprinting.
+ */
+function parseUA(ua = '') {
+  const s = String(ua);
+  if (!s) return { device: 'unknown', icon: '❓' };
+
+  let device = 'Unknown', icon = '💻';
+  if (/iPhone/i.test(s))                    { device = 'iPhone';  icon = '📱'; }
+  else if (/iPad/i.test(s))                 { device = 'iPad';    icon = '📱'; }
+  else if (/Android/i.test(s))              { device = /Mobile/i.test(s) ? 'Android' : 'Android tablet'; icon = '📱'; }
+  else if (/Macintosh|Mac OS X/i.test(s))   { device = 'Mac';     icon = '💻'; }
+  else if (/Windows/i.test(s))              { device = 'Windows'; icon = '🖥️'; }
+  else if (/CrOS/i.test(s))                 { device = 'ChromeOS';icon = '💻'; }
+  else if (/Linux/i.test(s))                { device = 'Linux';   icon = '💻'; }
+  else if (/curl|node|python|bot|spider/i.test(s)) { device = 'Bot/script'; icon = '🤖'; }
+
+  // In-app browsers matter here — most people will open this from a chat app.
+  let browser = '';
+  if (/FBAN|FBAV/i.test(s))            browser = 'Facebook';
+  else if (/Instagram/i.test(s))       browser = 'Instagram';
+  else if (/WhatsApp/i.test(s))        browser = 'WhatsApp';
+  else if (/Line\//i.test(s))          browser = 'LINE';
+  else if (/SnapChat/i.test(s))        browser = 'Snapchat';
+  else if (/Telegram/i.test(s))        browser = 'Telegram';
+  else if (/EdgA?\//i.test(s))         browser = 'Edge';
+  else if (/SamsungBrowser/i.test(s))  browser = 'Samsung';
+  else if (/OPR\/|Opera/i.test(s))     browser = 'Opera';
+  else if (/Firefox|FxiOS/i.test(s))   browser = 'Firefox';
+  else if (/CriOS|Chrome/i.test(s))    browser = 'Chrome';
+  else if (/Safari/i.test(s))          browser = 'Safari';
+  else if (/curl/i.test(s))            browser = 'curl';
+
+  return { device, icon, browser, label: browser ? `${device} · ${browser}` : device };
+}
+
+/** Trim IPv6-mapped IPv4 (::ffff:1.2.3.4 → 1.2.3.4) for readability. */
+const cleanIp = (ip) => String(ip || '').replace(/^::ffff:/, '') || '—';
+
+const deviceCell = (ua, ip) => {
+  const p = parseUA(ua);
+  return `<td><span title="${esc(ua)}">${p.icon} ${esc(p.label)}</span>
+    <div class="dim mono">${esc(cleanIp(ip))}</div></td>`;
+};
+
 app.get('/admin', (req, res) => {
   if (!authed(req)) {
     return res.status(401).send('<h2 style="font-family:sans-serif">Unauthorized — add ?key=YOUR_ADMIN_KEY</h2>');
@@ -120,12 +167,13 @@ app.get('/admin', (req, res) => {
 
   const sessRows = sess.length ? sess.map((s) => `<tr>
       <td class="mono">${esc(s.session).slice(0, 10)}</td>
+      ${deviceCell(s.user_agent, s.ip)}
       <td><b>${esc(labelOf[s.furthest] || s.furthest)}</b></td>
       <td class="num">${s.stepCount}</td>
       <td class="dim">${new Date(s.first).toLocaleString()}</td>
       <td class="dim">${new Date(s.last).toLocaleString()}</td>
     </tr>`).join('')
-    : '<tr><td colspan="5" class="empty">No visits yet</td></tr>';
+    : '<tr><td colspan="6" class="empty">No visits yet</td></tr>';
 
   const respRows = rows.length ? rows.map((r) => {
     const d = new Date(r.date + 'T00:00:00');
@@ -137,18 +185,20 @@ app.get('/admin', (req, res) => {
       <td><b>${esc(day)}</b></td>
       <td>${esc(r.time)}</td>
       <td>${esc(r.food)}</td>
+      ${deviceCell(r.user_agent, r.ip)}
       <td class="dim">${new Date(r.created_at).toLocaleString()}</td>
     </tr>`;
   }).join('')
-    : '<tr><td colspan="6" class="empty">No responses yet 🎂</td></tr>';
+    : '<tr><td colspan="7" class="empty">No responses yet 🎂</td></tr>';
 
   const eventRows = events.length ? events.map((e) => `<tr>
       <td class="mono">${esc(e.session).slice(0, 10)}</td>
+      ${deviceCell(e.user_agent, e.ip)}
       <td>${esc(labelOf[e.step] || e.step)}</td>
       <td class="dim">${esc(e.detail) || ''}</td>
       <td class="dim">${new Date(e.created_at).toLocaleString()}</td>
     </tr>`).join('')
-    : '<tr><td colspan="4" class="empty">No events yet</td></tr>';
+    : '<tr><td colspan="5" class="empty">No events yet</td></tr>';
 
   res.send(`<!DOCTYPE html><html><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -204,15 +254,15 @@ app.get('/admin', (req, res) => {
 <tbody>${funnelRows}</tbody></table>
 
 <h2>Confirmed treats</h2>
-<table><thead><tr><th>#</th><th>Name</th><th>Day</th><th>Time</th><th>Food</th><th>Submitted</th></tr></thead>
+<table><thead><tr><th>#</th><th>Name</th><th>Day</th><th>Time</th><th>Food</th><th>Device / IP</th><th>Submitted</th></tr></thead>
 <tbody>${respRows}</tbody></table>
 
 <h2>Visitors</h2>
-<table><thead><tr><th>Session</th><th>Got as far as</th><th class="num">Steps</th><th>First seen</th><th>Last seen</th></tr></thead>
+<table><thead><tr><th>Session</th><th>Device / IP</th><th>Got as far as</th><th class="num">Steps</th><th>First seen</th><th>Last seen</th></tr></thead>
 <tbody>${sessRows}</tbody></table>
 
 <h2>Recent activity</h2>
-<table><thead><tr><th>Session</th><th>Step</th><th>Detail</th><th>When</th></tr></thead>
+<table><thead><tr><th>Session</th><th>Device / IP</th><th>Step</th><th>Detail</th><th>When</th></tr></thead>
 <tbody>${eventRows}</tbody></table>
 
 <div class="danger">
