@@ -96,6 +96,53 @@
   @keyframes twinkle{0%,100%{opacity:0;transform:scale(.4)}50%{opacity:.95;transform:scale(1)}}
   @media (prefers-reduced-motion: reduce){ .dogift *{animation:none !important} }
 
+  /* ---- full-screen dancing dog ---- */
+  .party{
+    position:fixed;inset:0;z-index:20;display:none;place-items:center;padding:24px;
+    background:linear-gradient(160deg,#fce4ee,#fdf1f4 45%,#f6dce6);
+  }
+  .party.on{display:grid;animation:fadein .4s ease}
+  @keyframes fadein{from{opacity:0}to{opacity:1}}
+  .party-inner{text-align:center;max-width:460px;width:100%}
+  .party-top{
+    font-family:'Playfair Display',Georgia,serif;font-weight:700;color:var(--pink);
+    font-size:clamp(22px,6vw,34px);letter-spacing:.5px;margin-bottom:4px;
+    animation:pulse 1.1s ease-in-out infinite;
+  }
+  @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.07)}}
+  .party-msg{
+    font-family:'Playfair Display',Georgia,serif;font-style:italic;color:var(--ink);
+    font-size:clamp(15px,4vw,19px);line-height:1.6;margin:10px 0 22px;
+  }
+  .party-close{margin-top:4px}
+
+  .ddog{width:270px;max-width:70vw;height:auto;display:block;margin:0 auto;overflow:visible}
+  .ddog .ddog-body{transform-origin:110px 240px;animation:dance .58s ease-in-out infinite}
+  @keyframes dance{
+    0%,100%{transform:translateY(0)   rotate(-5deg) scale(1,1)}
+    25%    {transform:translateY(-16px) rotate(0deg) scale(.97,1.04)}
+    50%    {transform:translateY(0)   rotate(5deg)  scale(1.03,.97)}
+    75%    {transform:translateY(-16px) rotate(0deg) scale(.97,1.04)}
+  }
+  .ddog .leg{transform-box:fill-box;transform-origin:top center;animation:kick .58s ease-in-out infinite}
+  .ddog .leg.r{animation-delay:.29s}
+  @keyframes kick{0%,100%{transform:rotate(-20deg)}50%{transform:rotate(22deg)}}
+  .ddog .arm{transform-box:fill-box;transform-origin:bottom right;animation:wave .58s ease-in-out infinite}
+  .ddog .arm.r{transform-origin:bottom left;animation-delay:.29s}
+  @keyframes wave{0%,100%{transform:rotate(14deg)}50%{transform:rotate(-26deg)}}
+  .ddog .dhead{transform-origin:110px 110px;animation:tilt 1.16s ease-in-out infinite}
+  @keyframes tilt{0%,100%{transform:rotate(-9deg)}50%{transform:rotate(9deg)}}
+  .ddog .dear{transform-origin:center top;animation:earflap .58s ease-in-out infinite}
+  .ddog .dear.r{animation-delay:.29s}
+  @keyframes earflap{0%,100%{transform:rotate(-14deg)}50%{transform:rotate(14deg)}}
+  .ddog .dtail{transform-origin:152px 178px;animation:fastwag .18s ease-in-out infinite alternate}
+  @keyframes fastwag{from{transform:rotate(-26deg)}to{transform:rotate(24deg)}}
+  .ddog .tongue{transform-origin:110px 104px;animation:lick .58s ease-in-out infinite}
+  @keyframes lick{0%,100%{transform:translateY(0) scaleY(1)}50%{transform:translateY(3px) scaleY(1.25)}}
+  .ddog .dshadow{transform-origin:110px 240px;animation:dshrink .58s ease-in-out infinite}
+  @keyframes dshrink{0%,100%{transform:scale(1);opacity:.08}25%,75%{transform:scale(.78);opacity:.04}}
+  @media (prefers-reduced-motion: reduce){ .party *{animation:none !important} }
+
   .hearts{color:var(--pink-soft);letter-spacing:7px;font-size:18px;margin:6px 0 22px}
   .recap{background:#fff4f8;border-radius:16px;padding:18px;margin:20px 0 6px;text-align:left;font-size:14.5px;line-height:1.9;color:var(--ink-soft)}
   .recap b{color:var(--ink);font-weight:600}
@@ -105,7 +152,7 @@
   .share{display:flex;gap:8px;margin-top:14px}
   .share input{flex:1;padding:11px 12px;border-radius:10px;border:1px solid #e6d3db;font-size:12.5px;color:var(--ink-soft);background:#fff}
   .share button{padding:0 16px;border-radius:10px;border:0;background:var(--pink-soft);color:#7a2148;font-weight:600;cursor:pointer}
-  canvas#confetti{position:fixed;inset:0;pointer-events:none;z-index:9}
+  canvas#confetti{position:fixed;inset:0;pointer-events:none;z-index:30}
   @media(max-width:480px){.card{padding:34px 22px}.grid{gap:9px}#yesBtn{left:8%}#noBtn{left:56%}}
 </style>
 </head>
@@ -235,6 +282,63 @@
   </div>
 </div>
 
+<!-- FULL-SCREEN DANCING DOG -->
+<div class="party" id="party">
+  <div class="party-inner">
+    <div class="party-top">IT'S OFFICIAL 🎉</div>
+
+    <svg class="ddog" viewBox="0 0 220 250" role="img" aria-label="A dog dancing with joy">
+      <g class="note n1">♪</g>
+      <ellipse cx="110" cy="240" rx="52" ry="7" fill="#000" opacity=".08" class="dshadow"/>
+
+      <g class="ddog-body">
+        <!-- legs -->
+        <path class="leg l" d="M96 200 L86 232"  stroke="#c98a4b" stroke-width="15" stroke-linecap="round"/>
+        <path class="leg r" d="M124 200 L134 232" stroke="#c98a4b" stroke-width="15" stroke-linecap="round"/>
+        <!-- tail -->
+        <path class="dtail" d="M152 178 q28 -8 24 -34" stroke="#c98a4b" stroke-width="12" stroke-linecap="round" fill="none"/>
+        <!-- body -->
+        <ellipse cx="110" cy="172" rx="46" ry="40" fill="#d99a5b"/>
+        <ellipse cx="110" cy="184" rx="28" ry="24" fill="#f0d3b0"/>
+        <!-- arms -->
+        <g class="arm l">
+          <path d="M70 152 L40 122" stroke="#d99a5b" stroke-width="14" stroke-linecap="round" fill="none"/>
+          <circle cx="38" cy="120" r="10" fill="#e8b078"/>
+        </g>
+        <g class="arm r">
+          <path d="M150 152 L180 122" stroke="#d99a5b" stroke-width="14" stroke-linecap="round" fill="none"/>
+          <circle cx="182" cy="120" r="10" fill="#e8b078"/>
+        </g>
+
+        <!-- head -->
+        <g class="dhead">
+          <ellipse class="dear l" cx="78"  cy="74" rx="13" ry="27" fill="#b8763c"/>
+          <ellipse class="dear r" cx="142" cy="74" rx="13" ry="27" fill="#b8763c"/>
+          <circle cx="110" cy="84" r="38" fill="#d99a5b"/>
+          <path d="M110 46 a38 38 0 0 0 -33 20 q33 -11 66 0 a38 38 0 0 0 -33 -20z" fill="#c98a4b"/>
+          <!-- party hat -->
+          <path d="M110 14 L93 54 L127 54 z" fill="#e0357f"/>
+          <path d="M110 14 L102 54 L110 54 z" fill="#f2559a"/>
+          <circle cx="110" cy="12" r="7" fill="#ffd166"/>
+          <!-- happy eyes -->
+          <path d="M90 80 q7 -10 14 0"  stroke="#3a2a2a" stroke-width="4" fill="none" stroke-linecap="round"/>
+          <path d="M116 80 q7 -10 14 0" stroke="#3a2a2a" stroke-width="4" fill="none" stroke-linecap="round"/>
+          <ellipse cx="80"  cy="94" rx="9" ry="5.5" fill="#f4a0b8" opacity=".6"/>
+          <ellipse cx="140" cy="94" rx="9" ry="5.5" fill="#f4a0b8" opacity=".6"/>
+          <!-- muzzle + open happy mouth -->
+          <ellipse cx="110" cy="100" rx="20" ry="15" fill="#f5e3cd"/>
+          <ellipse cx="110" cy="93"  rx="6.4" ry="4.6" fill="#3a2a2a"/>
+          <path class="mouth" d="M96 103 q14 18 28 0 q-14 6 -28 0z" fill="#7a2148"/>
+          <ellipse class="tongue" cx="110" cy="110" rx="7" ry="5.5" fill="#ff8fa3"/>
+        </g>
+      </g>
+    </svg>
+
+    <div class="party-msg" id="partyMsg"></div>
+    <button class="btn party-close" id="partyClose">yay 🎂</button>
+  </div>
+</div>
+
 <script>
 /* ---------------- state ---------------- */
 const answers = { date:'', time:'', food:'', name:new URLSearchParams(location.search).get('to') || '' };
@@ -359,6 +463,7 @@ acceptBtn.onclick = async () => {
     saveMsg.style.color = '#2e8b57';
     saveMsg.textContent = 'Noted! treat locked for ' + pretty().day + ' at ' + pretty().time + '. No takebacks 🎂';
     burst(220);
+    setTimeout(showParty, 900);
   } catch (err) {
     acceptBtn.disabled = false; acceptBtn.textContent = '👆 I accept 🎁';
     saveMsg.style.color = '#c0245c';
@@ -373,6 +478,25 @@ if (copyBtn) copyBtn.onclick = async () => {
   catch { inp.select(); document.execCommand('copy'); }
   copyBtn.textContent = 'copied!'; setTimeout(() => copyBtn.textContent = 'copy', 1600);
 };
+
+/* ---------------- full-screen dancing dog ---------------- */
+const party = document.getElementById('party');
+let partyTimer = null;
+function showParty(){
+  const p = pretty();
+  document.getElementById('partyMsg').innerHTML =
+    `${p.day} · ${p.time}<br />${answers.food} is happening 🎊`;
+  party.classList.add('on');
+  burst(260);
+  clearInterval(partyTimer);
+  partyTimer = setInterval(() => burst(50), 900);   // keep the confetti coming
+}
+function hideParty(){
+  party.classList.remove('on');
+  clearInterval(partyTimer);
+}
+document.getElementById('partyClose').onclick = hideParty;
+document.addEventListener('keydown', e => { if (e.key === 'Escape') hideParty(); });
 
 /* ---------------- confetti ---------------- */
 const cv = document.getElementById('confetti'), ctx = cv.getContext('2d');
