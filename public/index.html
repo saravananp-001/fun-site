@@ -76,6 +76,26 @@
   .tile:hover{transform:translateY(-3px);border-color:var(--pink-soft)}
   .tile.sel{border-color:var(--pink);background:#fff4f8;color:var(--pink);box-shadow:0 6px 18px rgba(224,53,127,.16)}
 
+  /* animated dog + gift */
+  .dogift{width:200px;max-width:78%;height:auto;display:block;margin:0 auto 4px;overflow:visible}
+  .dogift .dog{transform-origin:100px 150px;animation:bob 2.2s ease-in-out infinite}
+  @keyframes bob{0%,100%{transform:translateY(0) rotate(0deg)}25%{transform:translateY(-6px) rotate(-1.5deg)}75%{transform:translateY(-6px) rotate(1.5deg)}}
+  .dogift .tail{transform-origin:141px 128px;animation:wag .42s ease-in-out infinite alternate}
+  @keyframes wag{from{transform:rotate(-22deg)}to{transform:rotate(20deg)}}
+  .dogift .ear{transform-origin:center top;animation:flop 2.2s ease-in-out infinite}
+  .dogift .ear.r{animation-delay:.15s}
+  @keyframes flop{0%,100%{transform:rotate(0deg)}50%{transform:rotate(6deg)}}
+  .dogift .gift{transform-origin:100px 133px;animation:present 2.2s ease-in-out infinite}
+  @keyframes present{0%,100%{transform:translateY(0) scale(1)}45%{transform:translateY(-5px) scale(1.05)}}
+  .dogift .eyes{transform-origin:100px 58px;animation:blink 4.4s infinite}
+  @keyframes blink{0%,92%,100%{transform:scaleY(1)}95%{transform:scaleY(.1)}}
+  .dogift .shadow{animation:shrink 2.2s ease-in-out infinite}
+  @keyframes shrink{0%,100%{transform:scaleX(1);opacity:.07}50%{transform:scaleX(.88);opacity:.05}}
+  .dogift .spk path{transform-box:fill-box;transform-origin:center;animation:twinkle 1.8s ease-in-out infinite}
+  .dogift .spk2{animation-delay:.45s}.dogift .spk3{animation-delay:.9s}.dogift .spk4{animation-delay:1.35s}
+  @keyframes twinkle{0%,100%{opacity:0;transform:scale(.4)}50%{opacity:.95;transform:scale(1)}}
+  @media (prefers-reduced-motion: reduce){ .dogift *{animation:none !important} }
+
   .hearts{color:var(--pink-soft);letter-spacing:7px;font-size:18px;margin:6px 0 22px}
   .recap{background:#fff4f8;border-radius:16px;padding:18px;margin:20px 0 6px;text-align:left;font-size:14.5px;line-height:1.9;color:var(--ink-soft)}
   .recap b{color:var(--ink);font-weight:600}
@@ -144,6 +164,61 @@
 
     <!-- 5. FINAL -->
     <section class="screen" id="s5">
+
+      <!-- animated dog presenting a gift -->
+      <svg class="dogift" viewBox="0 0 200 175" role="img" aria-label="A happy dog presenting a gift">
+        <!-- sparkles -->
+        <g fill="#ffd166" class="spk">
+          <path class="spk1" d="M28 34 l3 8 8 3 -8 3 -3 8 -3-8 -8-3 8-3z"/>
+          <path class="spk2" d="M172 26 l2.5 6.5 6.5 2.5 -6.5 2.5 -2.5 6.5 -2.5-6.5 -6.5-2.5 6.5-2.5z"/>
+          <path class="spk3" d="M180 96 l2 5 5 2 -5 2 -2 5 -2-5 -5-2 5-2z"/>
+          <path class="spk4" d="M20 100 l2 5 5 2 -5 2 -2 5 -2-5 -5-2 5-2z"/>
+        </g>
+
+        <ellipse cx="100" cy="167" rx="46" ry="6" fill="#000" opacity=".07" class="shadow"/>
+
+        <g class="dog">
+          <!-- tail -->
+          <path class="tail" d="M141 128 q26 -6 22 -30" stroke="#c98a4b" stroke-width="11" stroke-linecap="round" fill="none"/>
+          <!-- body -->
+          <ellipse cx="100" cy="126" rx="43" ry="34" fill="#d99a5b"/>
+          <ellipse cx="100" cy="136" rx="26" ry="22" fill="#f0d3b0"/>
+          <!-- ears -->
+          <ellipse class="ear l" cx="68"  cy="66" rx="12" ry="25" fill="#b8763c"/>
+          <ellipse class="ear r" cx="132" cy="66" rx="12" ry="25" fill="#b8763c"/>
+          <!-- head -->
+          <circle cx="100" cy="62" r="34" fill="#d99a5b"/>
+          <path d="M100 28 a34 34 0 0 0 -30 18 q30 -10 60 0 a34 34 0 0 0 -30 -18z" fill="#c98a4b"/>
+          <!-- eyes -->
+          <g class="eyes" fill="#3a2a2a">
+            <ellipse cx="87"  cy="58" rx="4.5" ry="5.5"/>
+            <ellipse cx="113" cy="58" rx="4.5" ry="5.5"/>
+          </g>
+          <circle cx="88.5" cy="56" r="1.6" fill="#fff"/>
+          <circle cx="114.5" cy="56" r="1.6" fill="#fff"/>
+          <!-- blush -->
+          <ellipse cx="76"  cy="70" rx="7" ry="4.5" fill="#f4a0b8" opacity=".55"/>
+          <ellipse cx="124" cy="70" rx="7" ry="4.5" fill="#f4a0b8" opacity=".55"/>
+          <!-- muzzle -->
+          <ellipse cx="100" cy="76" rx="17" ry="13" fill="#f5e3cd"/>
+          <ellipse cx="100" cy="70" rx="5.5" ry="4" fill="#3a2a2a"/>
+          <path d="M100 74 v5 M100 79 q-6 5 -10 0 M100 79 q6 5 10 0" stroke="#3a2a2a" stroke-width="2" fill="none" stroke-linecap="round"/>
+
+          <!-- gift -->
+          <g class="gift">
+            <rect x="72" y="112" width="56" height="42" rx="6" fill="#e0357f"/>
+            <rect x="72" y="112" width="56" height="13" rx="5" fill="#f2559a"/>
+            <rect x="94" y="112" width="12" height="42" fill="#ffd166"/>
+            <path d="M100 112 q-16 -14 -20 -2 q10 6 20 2z" fill="#ffd166"/>
+            <path d="M100 112 q16 -14 20 -2 q-10 6 -20 2z" fill="#ffd166"/>
+            <circle cx="100" cy="110" r="4.5" fill="#ffdf8a"/>
+          </g>
+          <!-- paws holding it -->
+          <ellipse cx="70"  cy="140" rx="12" ry="9" fill="#e8b078"/>
+          <ellipse cx="130" cy="140" rx="12" ry="9" fill="#e8b078"/>
+        </g>
+      </svg>
+
       <h1>glad you didn't say no.<br />be ready on time, I'm coming 🏍️</h1>
       <p class="sub">P.S. normal people just ask "Treat yavaga?". I built a website. no big deal.</p>
       <div class="hearts">🎂 🎉 🎈 🎊 🎁</div>
@@ -264,7 +339,8 @@ function showFinal(){
   const p = pretty();
   document.getElementById('recap').innerHTML =
     `📅 <b>${p.day}</b><br />🕐 <b>${p.time}</b><br />🍽️ <b>${answers.food}</b>`;
-  document.getElementById('shareUrl').value = location.origin + location.pathname;
+  const share = document.getElementById('shareUrl');
+  if (share) share.value = location.origin + location.pathname;
   go('s5');
 }
 
@@ -290,13 +366,13 @@ acceptBtn.onclick = async () => {
   }
 };
 
-// document.getElementById('copyBtn').onclick = async () => {
-//   const inp = document.getElementById('shareUrl');
-//   try { await navigator.clipboard.writeText(inp.value); }
-//   catch { inp.select(); document.execCommand('copy'); }
-//   const b = document.getElementById('copyBtn');
-//   b.textContent = 'copied!'; setTimeout(() => b.textContent = 'copy', 1600);
-// };
+const copyBtn = document.getElementById('copyBtn');
+if (copyBtn) copyBtn.onclick = async () => {
+  const inp = document.getElementById('shareUrl');
+  try { await navigator.clipboard.writeText(inp.value); }
+  catch { inp.select(); document.execCommand('copy'); }
+  copyBtn.textContent = 'copied!'; setTimeout(() => copyBtn.textContent = 'copy', 1600);
+};
 
 /* ---------------- confetti ---------------- */
 const cv = document.getElementById('confetti'), ctx = cv.getContext('2d');
