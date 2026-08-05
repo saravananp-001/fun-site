@@ -1,6 +1,6 @@
-# 🎂 It's my birthday — can I treat you?
+# 🎂 Will you give me a birthday treat?
 
-A cute multi-screen birthday-treat invite site with a Node backend that saves
+A cute multi-screen birthday-treat request site with a Node backend that saves
 every answer to a database.
 
 ## Run it
@@ -17,7 +17,7 @@ Then open:
 
 ## The 5 screens
 
-1. **The ask** — "It's my birthday — can I treat you?" with a `no` button that
+1. **The ask** — "Will you give me a birthday treat?" with a `no` button that
    runs away (and shrinks, while YES grows)
 2. **The surprise** — "WAIT YOU ACTUALLY SAID YES??"
 3. **When** — date picker + time dropdown (8:00 AM → 10:30 PM, 30-min steps)
@@ -26,7 +26,8 @@ Then open:
 5. **The confirmation** — recap card + "I accept" button that saves to the database
 
 Extras: floating 🎂🎉🎈, confetti bursts, a synthesized *Happy Birthday* tune
-(🔈 button, top-right — no audio files needed), and a copyable share link.
+that plays once when they hit YES (no audio files needed), and a copyable
+share link.
 
 ## Where the data goes
 

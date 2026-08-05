@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>a question for you ♥</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>♥</text></svg>" />
+<title>it's my birthday 🎂</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎂</text></svg>" />
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
 <style>
   :root{
@@ -82,12 +82,6 @@
   .foot{margin-top:26px;font-size:11.5px;color:#c39aab;letter-spacing:.4px}
   .err{color:#c0245c;font-size:13px;margin-top:12px;min-height:18px}
 
-  /* top-right controls */
-  .ctrl{position:fixed;top:16px;right:16px;z-index:5;display:flex;gap:8px}
-  .ctrl button{
-    background:rgba(255,255,255,.85);border:1px solid #f0dbe4;border-radius:999px;
-    width:40px;height:40px;font-size:17px;cursor:pointer;box-shadow:0 4px 14px rgba(160,60,100,.12)
-  }
   .share{display:flex;gap:8px;margin-top:14px}
   .share input{flex:1;padding:11px 12px;border-radius:10px;border:1px solid #e6d3db;font-size:12.5px;color:var(--ink-soft);background:#fff}
   .share button{padding:0 16px;border-radius:10px;border:0;background:var(--pink-soft);color:#7a2148;font-weight:600;cursor:pointer}
@@ -98,35 +92,33 @@
 <body>
 <div id="petals"></div>
 <canvas id="confetti"></canvas>
-<div class="ctrl">
-  <button id="musicBtn" title="music">🔈</button>
-</div>
-
 <div class="stage">
   <div class="card">
 
     <!-- 1. THE ASK -->
     <section class="screen active" id="s1">
-      <img class="avatar" id="askPhoto" alt="" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='96' height='96'><rect width='96' height='96' fill='%23eadfe4'/><text x='48' y='62' font-size='42' text-anchor='middle'>🐶</text></svg>" />
-      <h1>🌸 Will you go on a date with me? 🌸</h1>
+      <img class="avatar" id="askPhoto" alt="" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='96' height='96'><rect width='96' height='96' fill='%23eadfe4'/><text x='48' y='62' font-size='42' text-anchor='middle'>🎂</text></svg>" />
+      <h1>🎂 Will you give me a birthday treat? 🎂</h1>
+      <p class="sub">it's your birthday. you know what that means 👀</p>
       <div class="ask-row">
-        <button class="btn" id="yesBtn">YES ♥</button>
-        <button class="btn" id="noBtn">no 🥀</button>
+        <button class="btn" id="yesBtn">YES 🎂</button>
+        <button class="btn" id="noBtn">no 🥲</button>
       </div>
     </section>
 
     <!-- 2. SURPRISE -->
     <section class="screen" id="s2">
-      <div class="emoji-badge">🧽</div>
-      <h1>WAIT YOU ACTUALLY SAID YES?? 😭</h1>
-      <p class="sub">I was so ready for you to say no 🥹</p>
+      <div class="emoji-badge">🎈</div>
+      <h1>WAIT YOU ACTUALLY SAID YES?? 🥰</h1>
+      <p class="sub">I was so ready for you to say no 🫠</p>
       <button class="btn soft" data-go="s3">okay okay! →</button>
     </section>
 
     <!-- 3. WHEN -->
     <section class="screen" id="s3">
       <div class="emoji-badge">📅</div>
-      <h1>So... when are you free?</h1>
+      <h1>So... when i get my treat?</h1>
+      <p class="sub">pick a day, I'll clear my whole schedule 🎊</p>
       <div class="field">
         <label class="label" for="dateIn">Pick a Day 📅</label>
         <input type="date" id="dateIn" />
@@ -137,14 +129,14 @@
           <option value="">Select a time...</option>
         </select>
       </div>
-      <button class="btn wide" id="whenBtn" disabled>set the date! ♥</button>
+      <button class="btn wide" id="whenBtn" disabled>lock the day! 🎂</button>
       <div class="err" id="whenErr"></div>
     </section>
 
     <!-- 4. FOOD -->
     <section class="screen" id="s4">
-      <h1>What are we feeling? 🍽️✨</h1>
-      <p class="sub">pick your vibe</p>
+      <h1>What are we eating? 🍽️✨</h1>
+      <p class="sub">no pressure, but biriyani is right there 👀</p>
       <div class="grid" id="foodGrid"></div>
       <button class="btn wide" id="foodBtn" disabled>lock it in ♥</button>
       <div class="err" id="foodErr"></div>
@@ -152,16 +144,16 @@
 
     <!-- 5. FINAL -->
     <section class="screen" id="s5">
-      <h1>glad you didn't say no.<br />be ready by 6, I'm coming to get you 🚗</h1>
-      <p class="sub">P.S. normal people text. I made a website for you. no big deal.</p>
-      <div class="hearts">♥ ♥ ♥ ♥ ♥</div>
+      <h1>glad you didn't say no.<br />be ready on time, I'm coming 🏍️</h1>
+      <p class="sub">P.S. normal people just ask "Treat yavaga?". I built a website. no big deal.</p>
+      <div class="hearts">🎂 🎉 🎈 🎊 🎁</div>
       <div class="recap" id="recap"></div>
       <button class="btn wide" id="acceptBtn">👆 I accept 🎁</button>
       <div class="err" id="saveMsg"></div>
-      <div class="share">
+      <!-- <div class="share">
         <input id="shareUrl" readonly />
         <button id="copyBtn">copy</button>
-      </div>
+      </div> -->
       <div class="foot">made with ♥ · not on Replit</div>
     </section>
 
@@ -178,7 +170,7 @@ setInterval(() => {
   if (document.hidden) return;
   const p = document.createElement('div');
   p.className = 'petal';
-  p.textContent = ['♥','🌸','♡'][Math.floor(Math.random()*3)];
+  p.textContent = ['♥','🎂','🎉','🎈','🎊','🎁'][Math.floor(Math.random()*6)];
   p.style.left = Math.random()*100 + 'vw';
   p.style.fontSize = (10 + Math.random()*14) + 'px';
   p.style.animationDuration = (7 + Math.random()*7) + 's';
@@ -243,8 +235,9 @@ whenBtn.onclick = () => {
 
 /* ---------------- screen 4: food ---------------- */
 const FOODS = [
-  ['🍕','Pizza'], ['🍣','Sushi'], ['🍔','Burgers'],
-  ['🍝','Pasta'], ['🌮','Tacos'], ['🍜','Ramen']
+  ['🍛','Biriyani'], ['🍕','Pizza'],  ['🍔','Burgers'],
+  ['🍣','Sushi'],    ['🍝','Pasta'],  ['🌮','Tacos'],
+  ['🍜','Ramen'],    ['🥤','Drinks'], ['🍰','Dessert']
 ];
 const grid = document.getElementById('foodGrid');
 const foodBtn = document.getElementById('foodBtn');
@@ -278,7 +271,7 @@ function showFinal(){
 const acceptBtn = document.getElementById('acceptBtn');
 const saveMsg = document.getElementById('saveMsg');
 acceptBtn.onclick = async () => {
-  acceptBtn.disabled = true; acceptBtn.textContent = 'saving... ♥';
+  acceptBtn.disabled = true; acceptBtn.textContent = 'saving... 🎂';
   try {
     const r = await fetch('/api/response', {
       method:'POST', headers:{'Content-Type':'application/json'},
@@ -286,9 +279,9 @@ acceptBtn.onclick = async () => {
     });
     if (!r.ok) throw new Error('bad status ' + r.status);
     await r.json();
-    acceptBtn.textContent = "it's a date 🎉";
+    acceptBtn.textContent = "treat locked in 🎉";
     saveMsg.style.color = '#2e8b57';
-    saveMsg.textContent = 'Noted! we will meet on ' + pretty().day + ' at ' + pretty().time + '.';
+    saveMsg.textContent = 'Noted! treat locked for ' + pretty().day + ' at ' + pretty().time + '. No takebacks 🎂';
     burst(220);
   } catch (err) {
     acceptBtn.disabled = false; acceptBtn.textContent = '👆 I accept 🎁';
@@ -297,13 +290,13 @@ acceptBtn.onclick = async () => {
   }
 };
 
-document.getElementById('copyBtn').onclick = async () => {
-  const inp = document.getElementById('shareUrl');
-  try { await navigator.clipboard.writeText(inp.value); }
-  catch { inp.select(); document.execCommand('copy'); }
-  const b = document.getElementById('copyBtn');
-  b.textContent = 'copied!'; setTimeout(() => b.textContent = 'copy', 1600);
-};
+// document.getElementById('copyBtn').onclick = async () => {
+//   const inp = document.getElementById('shareUrl');
+//   try { await navigator.clipboard.writeText(inp.value); }
+//   catch { inp.select(); document.execCommand('copy'); }
+//   const b = document.getElementById('copyBtn');
+//   b.textContent = 'copied!'; setTimeout(() => b.textContent = 'copy', 1600);
+// };
 
 /* ---------------- confetti ---------------- */
 const cv = document.getElementById('confetti'), ctx = cv.getContext('2d');
@@ -333,32 +326,37 @@ function burst(n){
   requestAnimationFrame(loop);
 })();
 
-/* ---------------- music (generated, no files needed) ---------------- */
-let audioCtx = null, musicOn = false, musicTimer = null;
-const musicBtn = document.getElementById('musicBtn');
-const MELODY = [523.25,659.25,783.99,659.25,587.33,698.46,880.00,698.46];
+/* ---------------- music: plays "Happy Birthday" once on YES ---------------- */
+let audioCtx = null, musicPlayed = false;
+// "Happy Birthday to You" — 0 = rest
+const MELODY = [
+  392.00,392.00,440.00,392.00,523.25,493.88,0,
+  392.00,392.00,440.00,392.00,587.33,523.25,0,
+  392.00,392.00,783.99,659.25,523.25,493.88,440.00,0,
+  698.46,698.46,659.25,523.25,587.33,523.25
+];
+const STEP = 0.40; // seconds per note
+
 function startMusic(){
-  if (musicOn) return;
+  if (musicPlayed) return;
+  musicPlayed = true;
   try {
-    audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     audioCtx.resume();
-    musicOn = true; musicBtn.textContent = '🔊';
-    let i = 0;
-    const tick = () => {
-      const now = audioCtx.currentTime;
+    const t0 = audioCtx.currentTime + 0.15;
+    MELODY.forEach((f, i) => {
+      if (!f) return;                       // rest
+      const t = t0 + i * STEP;
       const o = audioCtx.createOscillator(), g = audioCtx.createGain();
-      o.type = 'triangle'; o.frequency.value = MELODY[i++ % MELODY.length];
-      g.gain.setValueAtTime(0, now);
-      g.gain.linearRampToValueAtTime(.06, now + .05);
-      g.gain.exponentialRampToValueAtTime(.0001, now + .55);
+      o.type = 'triangle'; o.frequency.value = f;
+      g.gain.setValueAtTime(0, t);
+      g.gain.linearRampToValueAtTime(.06, t + .04);
+      g.gain.exponentialRampToValueAtTime(.0001, t + .45);
       o.connect(g); g.connect(audioCtx.destination);
-      o.start(now); o.stop(now + .6);
-    };
-    tick(); musicTimer = setInterval(tick, 480);
-  } catch { musicOn = false; }
+      o.start(t); o.stop(t + .5);
+    });
+  } catch { /* audio not available — no problem */ }
 }
-function stopMusic(){ clearInterval(musicTimer); musicOn = false; musicBtn.textContent = '🔈'; }
-musicBtn.onclick = () => musicOn ? stopMusic() : startMusic();
 </script>
 </body>
 </html>
