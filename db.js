@@ -49,6 +49,7 @@ try {
     CREATE TABLE IF NOT EXISTS events (
       id         INTEGER PRIMARY KEY AUTOINCREMENT,
       session    TEXT NOT NULL,
+      name       TEXT,
       step       TEXT NOT NULL,
       detail     TEXT,
       user_agent TEXT,
@@ -58,6 +59,13 @@ try {
     CREATE INDEX IF NOT EXISTS idx_events_session ON events(session);
     CREATE INDEX IF NOT EXISTS idx_events_step    ON events(step);
   `);
+  // Migration: databases created before the name column existed.
+  const cols = db.prepare('PRAGMA table_info(events)').all().map((c) => c.name);
+  if (!cols.includes('name')) {
+    db.exec('ALTER TABLE events ADD COLUMN name TEXT');
+    console.log('[db] migrated: added events.name');
+  }
+
   mode = 'sqlite';
 } catch (err) {
   console.warn('[db] node:sqlite unavailable (' + err.code + ') — using JSON file storage.');
@@ -109,6 +117,7 @@ function list() {
 function saveEvent(row) {
   const record = {
     session: String(row.session || 'unknown').slice(0, 40),
+    name: row.name ? String(row.name).slice(0, 100) : null,
     step: String(row.step || 'unknown').slice(0, 40),
     detail: row.detail == null ? null : String(row.detail).slice(0, 300),
     user_agent: row.user_agent || null,
@@ -118,10 +127,10 @@ function saveEvent(row) {
 
   if (mode === 'sqlite') {
     const info = db.prepare(
-      `INSERT INTO events (session, step, detail, user_agent, ip, created_at)
-       VALUES (?, ?, ?, ?, ?, ?)`
+      `INSERT INTO events (session, name, step, detail, user_agent, ip, created_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?)`
     ).run(
-      record.session, record.step, record.detail,
+      record.session, record.name, record.step, record.detail,
       record.user_agent, record.ip, record.created_at
     );
     return { id: Number(info.lastInsertRowid), ...record };
@@ -183,10 +192,11 @@ function sessions() {
   for (const e of rows) {
     let s = map.get(e.session);
     if (!s) {
-      s = { session: e.session, first: e.created_at, last: e.created_at,
+      s = { session: e.session, name: null, first: e.created_at, last: e.created_at,
             steps: new Set(), furthest: e.step, rank: -1, ip: e.ip, user_agent: e.user_agent };
       map.set(e.session, s);
     }
+    if (e.name && !s.name) s.name = e.name;   // keep the first name we saw
     s.last = e.created_at;
     s.steps.add(e.step);
     const r = order[e.step];

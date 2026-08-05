@@ -22,11 +22,11 @@ const meta = (req) => ({
 
 /* ---------- track every step ---------- */
 app.post('/api/event', (req, res) => {
-  const { session, step, detail } = req.body || {};
+  const { session, step, detail, name } = req.body || {};
   if (!session || !step) return res.status(400).json({ error: 'session and step required' });
 
   try {
-    const saved = store.saveEvent({ session, step, detail, ...meta(req) });
+    const saved = store.saveEvent({ session, name, step, detail, ...meta(req) });
     console.log(`· ${String(step).padEnd(11)} ${String(session).slice(0, 8)}${detail ? '  ' + detail : ''}`);
     res.json({ ok: true, id: saved.id });
   } catch (err) {
@@ -166,7 +166,7 @@ app.get('/admin', (req, res) => {
   }).join('');
 
   const sessRows = sess.length ? sess.map((s) => `<tr>
-      <td class="mono">${esc(s.session).slice(0, 10)}</td>
+      <td>${s.name ? '<b>' + esc(s.name) + '</b>' : '<span class="mono dim">' + esc(s.session).slice(0, 10) + '</span>'}</td>
       ${deviceCell(s.user_agent, s.ip)}
       <td><b>${esc(labelOf[s.furthest] || s.furthest)}</b></td>
       <td class="num">${s.stepCount}</td>
@@ -191,8 +191,20 @@ app.get('/admin', (req, res) => {
   }).join('')
     : '<tr><td colspan="7" class="empty">No responses yet 🎂</td></tr>';
 
+  // A visitor may only reveal their name partway through; show it on every
+  // row of that session once we know it.
+  const nameBySession = {};
+  for (const s of sess) if (s.name) nameBySession[s.session] = s.name;
+
+  const nameCell = (e) => {
+    const n = e.name || nameBySession[e.session];
+    return n
+      ? `<td><b>${esc(n)}</b></td>`
+      : `<td class="mono dim">${esc(e.session).slice(0, 10)}</td>`;
+  };
+
   const eventRows = events.length ? events.map((e) => `<tr>
-      <td class="mono">${esc(e.session).slice(0, 10)}</td>
+      ${nameCell(e)}
       ${deviceCell(e.user_agent, e.ip)}
       <td>${esc(labelOf[e.step] || e.step)}</td>
       <td class="dim">${esc(e.detail) || ''}</td>
@@ -258,11 +270,11 @@ app.get('/admin', (req, res) => {
 <tbody>${respRows}</tbody></table>
 
 <h2>Visitors</h2>
-<table><thead><tr><th>Session</th><th>Device / IP</th><th>Got as far as</th><th class="num">Steps</th><th>First seen</th><th>Last seen</th></tr></thead>
+<table><thead><tr><th>Who</th><th>Device / IP</th><th>Got as far as</th><th class="num">Steps</th><th>First seen</th><th>Last seen</th></tr></thead>
 <tbody>${sessRows}</tbody></table>
 
 <h2>Recent activity</h2>
-<table><thead><tr><th>Session</th><th>Device / IP</th><th>Step</th><th>Detail</th><th>When</th></tr></thead>
+<table><thead><tr><th>Who</th><th>Device / IP</th><th>Step</th><th>Detail</th><th>When</th></tr></thead>
 <tbody>${eventRows}</tbody></table>
 
 <div class="danger">

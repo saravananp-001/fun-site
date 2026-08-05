@@ -37,6 +37,11 @@ people opened the page and where they dropped off.
 Each visitor gets a random session id (kept in `localStorage`, so a reload
 doesn't double-count them). These steps are logged:
 
+If you send a personalised link (`.../?to=Priya`), that name rides along with
+every event, so the dashboard's **Who** column shows "Priya" instead of a
+session id — on every row, not just the final response. Visitors without a
+`?to=` fall back to their short session id.
+
 | Step | When |
 |---|---|
 | `visit` | page opened |

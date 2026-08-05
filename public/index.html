@@ -356,7 +356,9 @@ const SESSION = (() => {
 })();
 
 function track(step, detail){
-  const body = JSON.stringify({ session: SESSION, step, detail: detail ?? null });
+  const body = JSON.stringify({
+    session: SESSION, step, detail: detail ?? null, name: answers.name || null
+  });
   try {
     // sendBeacon survives the page closing; fetch is the fallback
     if (navigator.sendBeacon) {
