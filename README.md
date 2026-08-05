@@ -29,22 +29,54 @@ Extras: floating 🎂🎉🎈, confetti bursts, a synthesized *Happy Birthday* t
 that plays once when they hit YES (no audio files needed), and a copyable
 share link.
 
+## Step tracking
+
+Every click is recorded, not just the final answer — so you can see how many
+people opened the page and where they dropped off.
+
+Each visitor gets a random session id (kept in `localStorage`, so a reload
+doesn't double-count them). These steps are logged:
+
+| Step | When |
+|---|---|
+| `visit` | page opened |
+| `no_dodge` | tried to click "no" (logged at dodge 1, 5, 10) |
+| `yes` | clicked YES — detail records how many dodges it took |
+| `intro_done` | past the surprise screen |
+| `date_time` | picked day + time |
+| `food_tap` | tapped a food tile (fires on each change of mind) |
+| `food` | confirmed the food |
+| `accept_click` | pressed "I accept" |
+| `accepted` | save succeeded |
+| `save_failed` | save errored — detail has the reason |
+
+The dashboard at `/admin` shows visits, sessions, conversion rate, a funnel bar
+chart, every visitor with how far they got, and a recent-activity log.
+
+Tracking uses `navigator.sendBeacon`, so events still arrive if they close the
+tab mid-flow. It's wrapped in try/catch — if tracking fails, the page still works.
+
 ## Where the data goes
 
-Answers are saved to `data/responses.db` (SQLite, via Node's built-in
-`node:sqlite` — no native compilation needed).
+Everything lands in `data/responses.db` (SQLite, via Node's built-in
+`node:sqlite` — no native compilation needed), in two tables:
 
-If SQLite can't open the file on your system, it automatically falls back to
-`data/responses.jsonl` and keeps working. The `/admin` page shows which mode
-is active.
+- `responses` — one row per confirmed treat: name, date, time, food, timestamp, IP, user agent
+- `events` — one row per click: session, step, detail, timestamp, IP, user agent
 
-Each row stores: name (optional), date, time, food, timestamp, IP, user agent.
+If SQLite can't open the file on your system, it falls back to
+`data/responses.jsonl` + `data/events.jsonl` and keeps working. The `/admin`
+page shows which mode is active.
 
 **Read the data yourself:**
 
 ```bash
 sqlite3 data/responses.db "SELECT * FROM responses;"
-curl http://localhost:3000/api/responses          # same data as JSON
+sqlite3 data/responses.db "SELECT step, COUNT(DISTINCT session) FROM events GROUP BY step;"
+
+curl "http://localhost:3000/api/responses?key=saravanan"
+curl "http://localhost:3000/api/events?key=saravanan"
+curl "http://localhost:3000/api/funnel?key=saravanan"
 ```
 
 ## Personalizing it

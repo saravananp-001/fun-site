@@ -343,6 +343,32 @@
 /* ---------------- state ---------------- */
 const answers = { date:'', time:'', food:'', name:new URLSearchParams(location.search).get('to') || '' };
 
+/* ---------------- step tracking ---------------- */
+// One id per visitor, kept across reloads so the funnel doesn't double-count.
+const SESSION = (() => {
+  let s = null;
+  try { s = localStorage.getItem('treat_session'); } catch {}
+  if (!s) {
+    s = (Date.now().toString(36) + Math.random().toString(36).slice(2, 10));
+    try { localStorage.setItem('treat_session', s); } catch {}
+  }
+  return s;
+})();
+
+function track(step, detail){
+  const body = JSON.stringify({ session: SESSION, step, detail: detail ?? null });
+  try {
+    // sendBeacon survives the page closing; fetch is the fallback
+    if (navigator.sendBeacon) {
+      navigator.sendBeacon('/api/event', new Blob([body], { type: 'application/json' }));
+    } else {
+      fetch('/api/event', { method:'POST', headers:{'Content-Type':'application/json'}, body, keepalive:true });
+    }
+  } catch { /* tracking must never break the page */ }
+}
+
+track('visit', document.referrer || 'direct');
+
 /* ---------------- petals ---------------- */
 const petalBox = document.getElementById('petals');
 setInterval(() => {
@@ -365,7 +391,10 @@ function go(id){
   el.style.animation = 'none'; void el.offsetWidth; el.style.animation = '';
   window.scrollTo({top:0, behavior:'smooth'});
 }
-document.querySelectorAll('[data-go]').forEach(b => b.onclick = () => go(b.dataset.go));
+document.querySelectorAll('[data-go]').forEach(b => b.onclick = () => {
+  if (b.dataset.go === 's3') track('intro_done');
+  go(b.dataset.go);
+});
 
 /* ---------------- screen 1: dodging no ---------------- */
 const noBtn = document.getElementById('noBtn');
@@ -381,6 +410,7 @@ function dodge(){
   noBtn.style.left = x + 'px';
   noBtn.style.top  = y + 'px';
   noBtn.textContent = nopes[Math.min(++dodges, nopes.length - 1)];
+  if (dodges === 1 || dodges === 5 || dodges === 10) track('no_dodge', 'dodge #' + dodges);
   const scale = Math.min(1 + dodges * 0.13, 2.3);
   yesBtn.style.transform = `scale(${scale})`;
   if (dodges > 3) noBtn.style.transform = `scale(${Math.max(0.55, 1 - dodges*0.06)})`;
@@ -389,7 +419,7 @@ noBtn.addEventListener('mouseenter', dodge);
 noBtn.addEventListener('touchstart', e => { e.preventDefault(); dodge(); }, {passive:false});
 noBtn.addEventListener('click', e => { e.preventDefault(); dodge(); });
 
-yesBtn.onclick = () => { burst(140); startMusic(); go('s2'); };
+yesBtn.onclick = () => { track('yes', 'after ' + dodges + ' dodges'); burst(140); startMusic(); go('s2'); };
 
 /* ---------------- screen 3: when ---------------- */
 const dateIn = document.getElementById('dateIn');
@@ -409,6 +439,7 @@ function checkWhen(){ whenBtn.disabled = !(dateIn.value && timeIn.value); }
 dateIn.oninput = timeIn.oninput = checkWhen;
 whenBtn.onclick = () => {
   answers.date = dateIn.value; answers.time = timeIn.value;
+  track('date_time', answers.date + ' ' + answers.time);
   burst(60); go('s4');
 };
 
@@ -426,10 +457,11 @@ FOODS.forEach(([e,n]) => {
   t.onclick = () => {
     grid.querySelectorAll('.tile').forEach(x => x.classList.remove('sel'));
     t.classList.add('sel'); answers.food = n; foodBtn.disabled = false;
+    track('food_tap', n);
   };
   grid.appendChild(t);
 });
-foodBtn.onclick = () => { burst(90); showFinal(); };
+foodBtn.onclick = () => { track('food', answers.food); burst(90); showFinal(); };
 
 /* ---------------- screen 5: final ---------------- */
 function pretty(){
@@ -452,6 +484,7 @@ const acceptBtn = document.getElementById('acceptBtn');
 const saveMsg = document.getElementById('saveMsg');
 acceptBtn.onclick = async () => {
   acceptBtn.disabled = true; acceptBtn.textContent = 'saving... 🎂';
+  track('accept_click', answers.date + ' ' + answers.time + ' · ' + answers.food);
   try {
     const r = await fetch('/api/response', {
       method:'POST', headers:{'Content-Type':'application/json'},
@@ -459,6 +492,7 @@ acceptBtn.onclick = async () => {
     });
     if (!r.ok) throw new Error('bad status ' + r.status);
     await r.json();
+    track('accepted', answers.food);
     acceptBtn.textContent = "treat locked in 🎉";
     saveMsg.style.color = '#2e8b57';
     saveMsg.textContent = 'Noted! treat locked for ' + pretty().day + ' at ' + pretty().time + '. No takebacks 🎂';
@@ -468,6 +502,7 @@ acceptBtn.onclick = async () => {
     acceptBtn.disabled = false; acceptBtn.textContent = '👆 I accept 🎁';
     saveMsg.style.color = '#c0245c';
     saveMsg.textContent = 'Could not save — is the server running? (' + err.message + ')';
+    track('save_failed', err.message);
   }
 };
 
