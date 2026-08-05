@@ -4,9 +4,12 @@ const store = require('./db');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+// Behind nginx, bind to loopback only so the Node port isn't reachable from outside.
+// Set HOST=0.0.0.0 to expose it directly.
+const HOST = process.env.HOST || '127.0.0.1';
 
 // Change this to protect /admin. Set ADMIN_KEY env var, or leave blank for open access.
-const ADMIN_KEY = process.env.ADMIN_KEY || 'saravanan';
+const ADMIN_KEY = process.env.ADMIN_KEY || '';
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
@@ -258,8 +261,9 @@ document.querySelectorAll('.wipe').forEach(btn => {
 </div></body></html>`);
 });
 
-app.listen(PORT, () => {
-  console.log(`\n  🎂 Treat site running → http://localhost:${PORT}`);
-  console.log(`  📊 Dashboard          → http://localhost:${PORT}/admin${ADMIN_KEY ? '?key=' + ADMIN_KEY : ''}`);
-  console.log(`  💾 Storage mode       → ${store.mode}\n`);
+app.listen(PORT, HOST, () => {
+  console.log(`\n  🎂 Treat site running → http://${HOST}:${PORT}`);
+  console.log(`  📊 Dashboard          → http://${HOST}:${PORT}/admin${ADMIN_KEY ? '?key=' + ADMIN_KEY : ''}`);
+  console.log(`  💾 Storage mode       → ${store.mode}`);
+  console.log(`  📁 Data directory     → ${path.dirname(store.DB_FILE)}\n`);
 });

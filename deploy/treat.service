@@ -1,0 +1,49 @@
+[Unit]
+Description=Birthday treat site
+Documentation=file:///opt/treat/README.md
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=treat
+Group=treat
+WorkingDirectory=/opt/treat
+ExecStart=/usr/bin/node /opt/treat/server.js
+
+# --- configuration -------------------------------------------------
+# Node listens on loopback only; nginx is what faces the network.
+Environment=NODE_ENV=production
+Environment=HOST=127.0.0.1
+Environment=PORT=3000
+Environment=DATA_DIR=/var/lib/treat
+# Change this before going live, then: systemctl daemon-reload && systemctl restart treat
+Environment=ADMIN_KEY=saravanan
+
+# --- keep it alive -------------------------------------------------
+Restart=always
+RestartSec=3
+StartLimitIntervalSec=0
+
+# --- logging -------------------------------------------------------
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=treat
+
+# --- hardening -----------------------------------------------------
+# The service only ever needs to write to its data directory.
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/treat
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+RestrictNamespaces=true
+LockPersonality=true
+MemoryDenyWriteExecute=false
+
+[Install]
+WantedBy=multi-user.target
