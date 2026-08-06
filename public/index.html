@@ -6,6 +6,8 @@
 <title>it's my birthday 🎂</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎂</text></svg>" />
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<!-- fetch the celebration gif early so it plays instantly when the overlay opens -->
+<link rel="preload" as="image" href="/best-friends-bestie.gif" />
 <style>
   :root{
     --bg1:#fbe9ef; --bg2:#f6dce6; --bg3:#fdf1f4;
@@ -236,31 +238,15 @@
   }
   .party-close{margin-top:4px}
 
-  .ddog{width:270px;max-width:70vw;height:auto;display:block;margin:0 auto;overflow:visible}
-  .ddog .ddog-body{transform-origin:110px 240px;animation:dance .58s ease-in-out infinite}
-  @keyframes dance{
-    0%,100%{transform:translateY(0)   rotate(-5deg) scale(1,1)}
-    25%    {transform:translateY(-16px) rotate(0deg) scale(.97,1.04)}
-    50%    {transform:translateY(0)   rotate(5deg)  scale(1.03,.97)}
-    75%    {transform:translateY(-16px) rotate(0deg) scale(.97,1.04)}
+  /* best-friend cats gif */
+  .cats{
+    width:270px;max-width:74vw;height:auto;display:block;margin:0 auto 4px;
+    border-radius:24px;
+    box-shadow:0 18px 44px rgba(160,60,100,.26), 0 0 0 5px #fff, 0 0 0 7px var(--pink-soft);
+    animation:catsIn .65s var(--ease) both, catsFloat 3.6s ease-in-out .65s infinite;
   }
-  .ddog .leg{transform-box:fill-box;transform-origin:top center;animation:kick .58s ease-in-out infinite}
-  .ddog .leg.r{animation-delay:.29s}
-  @keyframes kick{0%,100%{transform:rotate(-20deg)}50%{transform:rotate(22deg)}}
-  .ddog .arm{transform-box:fill-box;transform-origin:bottom right;animation:wave .58s ease-in-out infinite}
-  .ddog .arm.r{transform-origin:bottom left;animation-delay:.29s}
-  @keyframes wave{0%,100%{transform:rotate(14deg)}50%{transform:rotate(-26deg)}}
-  .ddog .dhead{transform-origin:110px 110px;animation:tilt 1.16s ease-in-out infinite}
-  @keyframes tilt{0%,100%{transform:rotate(-9deg)}50%{transform:rotate(9deg)}}
-  .ddog .dear{transform-origin:center top;animation:earflap .58s ease-in-out infinite}
-  .ddog .dear.r{animation-delay:.29s}
-  @keyframes earflap{0%,100%{transform:rotate(-14deg)}50%{transform:rotate(14deg)}}
-  .ddog .dtail{transform-origin:152px 178px;animation:fastwag .18s ease-in-out infinite alternate}
-  @keyframes fastwag{from{transform:rotate(-26deg)}to{transform:rotate(24deg)}}
-  .ddog .tongue{transform-origin:110px 104px;animation:lick .58s ease-in-out infinite}
-  @keyframes lick{0%,100%{transform:translateY(0) scaleY(1)}50%{transform:translateY(3px) scaleY(1.25)}}
-  .ddog .dshadow{transform-origin:110px 240px;animation:dshrink .58s ease-in-out infinite}
-  @keyframes dshrink{0%,100%{transform:scale(1);opacity:.08}25%,75%{transform:scale(.78);opacity:.04}}
+  @keyframes catsIn{from{opacity:0;transform:scale(.7) rotate(-5deg)}to{opacity:1;transform:none}}
+  @keyframes catsFloat{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-9px) rotate(1deg)}}
   @media (prefers-reduced-motion: reduce){ .party *{animation:none !important} }
 
   .hearts{color:var(--pink-soft);letter-spacing:7px;font-size:18px;margin:6px 0 22px}
@@ -466,57 +452,13 @@
   </div>
 </div>
 
-<!-- FULL-SCREEN DANCING DOG -->
+<!-- FULL-SCREEN CELEBRATION: TWO CATS HUGGING -->
 <div class="party" id="party">
   <div class="party-inner">
     <div class="party-top">IT'S OFFICIAL 🎉</div>
 
-    <svg class="ddog" viewBox="0 0 220 250" role="img" aria-label="A dog dancing with joy">
-      <g class="note n1">♪</g>
-      <ellipse cx="110" cy="240" rx="52" ry="7" fill="#000" opacity=".08" class="dshadow"/>
-
-      <g class="ddog-body">
-        <!-- legs -->
-        <path class="leg l" d="M96 200 L86 232"  stroke="#c98a4b" stroke-width="15" stroke-linecap="round"/>
-        <path class="leg r" d="M124 200 L134 232" stroke="#c98a4b" stroke-width="15" stroke-linecap="round"/>
-        <!-- tail -->
-        <path class="dtail" d="M152 178 q28 -8 24 -34" stroke="#c98a4b" stroke-width="12" stroke-linecap="round" fill="none"/>
-        <!-- body -->
-        <ellipse cx="110" cy="172" rx="46" ry="40" fill="#d99a5b"/>
-        <ellipse cx="110" cy="184" rx="28" ry="24" fill="#f0d3b0"/>
-        <!-- arms -->
-        <g class="arm l">
-          <path d="M70 152 L40 122" stroke="#d99a5b" stroke-width="14" stroke-linecap="round" fill="none"/>
-          <circle cx="38" cy="120" r="10" fill="#e8b078"/>
-        </g>
-        <g class="arm r">
-          <path d="M150 152 L180 122" stroke="#d99a5b" stroke-width="14" stroke-linecap="round" fill="none"/>
-          <circle cx="182" cy="120" r="10" fill="#e8b078"/>
-        </g>
-
-        <!-- head -->
-        <g class="dhead">
-          <ellipse class="dear l" cx="78"  cy="74" rx="13" ry="27" fill="#b8763c"/>
-          <ellipse class="dear r" cx="142" cy="74" rx="13" ry="27" fill="#b8763c"/>
-          <circle cx="110" cy="84" r="38" fill="#d99a5b"/>
-          <path d="M110 46 a38 38 0 0 0 -33 20 q33 -11 66 0 a38 38 0 0 0 -33 -20z" fill="#c98a4b"/>
-          <!-- party hat -->
-          <path d="M110 14 L93 54 L127 54 z" fill="#e0357f"/>
-          <path d="M110 14 L102 54 L110 54 z" fill="#f2559a"/>
-          <circle cx="110" cy="12" r="7" fill="#ffd166"/>
-          <!-- happy eyes -->
-          <path d="M90 80 q7 -10 14 0"  stroke="#3a2a2a" stroke-width="4" fill="none" stroke-linecap="round"/>
-          <path d="M116 80 q7 -10 14 0" stroke="#3a2a2a" stroke-width="4" fill="none" stroke-linecap="round"/>
-          <ellipse cx="80"  cy="94" rx="9" ry="5.5" fill="#f4a0b8" opacity=".6"/>
-          <ellipse cx="140" cy="94" rx="9" ry="5.5" fill="#f4a0b8" opacity=".6"/>
-          <!-- muzzle + open happy mouth -->
-          <ellipse cx="110" cy="100" rx="20" ry="15" fill="#f5e3cd"/>
-          <ellipse cx="110" cy="93"  rx="6.4" ry="4.6" fill="#3a2a2a"/>
-          <path class="mouth" d="M96 103 q14 18 28 0 q-14 6 -28 0z" fill="#7a2148"/>
-          <ellipse class="tongue" cx="110" cy="110" rx="7" ry="5.5" fill="#ff8fa3"/>
-        </g>
-      </g>
-    </svg>
+    <img class="cats" src="/best-friends-bestie.gif"
+         alt="Two best-friend cats sitting together" width="498" height="498" />
 
     <div class="party-msg" id="partyMsg"></div>
     <button class="btn party-close" id="partyClose">yay 🎂</button>

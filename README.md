@@ -23,7 +23,8 @@ Then open:
 3. **When** — date picker + time dropdown (8:00 AM → 10:30 PM, 30-min steps)
 4. **What are we eating** — biriyani / dosa / parotta / fish / pizza / burgers /
    ramen / drinks / dessert
-5. **The confirmation** — recap card + "I accept" button that saves to the database
+5. **The confirmation** — recap card + "I accept" button that saves to the
+   database, then a full-screen celebration with the best-friend cats gif
 
 Extras: floating 🎂🎉🎈, confetti bursts, a synthesized *Happy Birthday* tune
 that plays once when they hit YES (no audio files needed), and a copyable
@@ -114,7 +115,8 @@ Everything lives in `public/index.html`:
 
 | What | Where |
 |---|---|
-| The cake photo | `<img id="askPhoto" src="...">` — swap for your own image |
+| Celebration gif | `public/best-friends-bestie.gif` — drop in any gif with the same name, or change `img.cats` |
+| The cake | inline `<svg class="cake">` on screen 1 |
 | Final message | screen `s5` `<h1>` |
 | Food options | `const FOODS = [...]` |
 | The escalating "no" button text | `const nopes = [...]` |
