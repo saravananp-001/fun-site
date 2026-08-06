@@ -11,70 +11,190 @@
     --bg1:#fbe9ef; --bg2:#f6dce6; --bg3:#fdf1f4;
     --ink:#5c1730; --ink-soft:#8a5468;
     --pink:#e0357f; --pink-soft:#f2a8c6; --pink-pale:#fce4ee;
-    --card:#fdfaf7; --shadow:0 24px 60px rgba(160,60,100,.18);
+    --gold:#ffc94d; --violet:#9b5de5; --mint:#43c6ac;
+    --card:#fffcfa; --shadow:0 24px 60px rgba(160,60,100,.18);
+    --ease:cubic-bezier(.22,1.2,.36,1);
   }
   *{box-sizing:border-box}
   html,body{height:100%}
   body{
     margin:0; font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;
-    color:var(--ink); background:linear-gradient(160deg,var(--bg1),var(--bg3) 45%,var(--bg2));
+    color:var(--ink);
     min-height:100dvh; display:grid; place-items:center; padding:20px; overflow-x:hidden;
+    background:linear-gradient(135deg,#fde7f0,#fdf1f4,#f8e4f6,#fbeadf,#fde7f0);
+    background-size:400% 400%;
+    animation:drift 26s ease-in-out infinite;
   }
-  /* floating hearts */
-  #petals{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
-  .petal{position:absolute;top:-40px;font-size:14px;opacity:.5;animation:fall linear forwards}
-  @keyframes fall{to{transform:translateY(110vh) rotate(360deg);opacity:0}}
+  @keyframes drift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+
+  /* soft colour blobs behind everything */
+  body::before,body::after{
+    content:'';position:fixed;border-radius:50%;pointer-events:none;z-index:0;
+    filter:blur(70px);opacity:.32;
+  }
+  body::before{width:44vmin;height:44vmin;background:var(--pink-soft);top:-10vmin;left:-8vmin;animation:float1 19s ease-in-out infinite}
+  body::after {width:38vmin;height:38vmin;background:#ffd98a;bottom:-8vmin;right:-6vmin;animation:float2 23s ease-in-out infinite}
+  @keyframes float1{0%,100%{transform:translate(0,0)}50%{transform:translate(6vmin,9vmin)}}
+  @keyframes float2{0%,100%{transform:translate(0,0)}50%{transform:translate(-8vmin,-6vmin)}}
+
+  /* floating confetti + balloons */
+  #petals{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden}
+  .petal{position:absolute;top:-50px;font-size:14px;opacity:.55;animation:fall linear forwards;will-change:transform}
+  @keyframes fall{
+    0%{transform:translateY(0) translateX(0) rotate(0deg);opacity:0}
+    10%{opacity:.6}
+    100%{transform:translateY(112vh) translateX(var(--sway,20px)) rotate(420deg);opacity:0}
+  }
+  .balloon{position:absolute;bottom:-90px;font-size:30px;opacity:.5;animation:rise linear forwards;will-change:transform}
+  @keyframes rise{
+    0%{transform:translateY(0) rotate(-6deg);opacity:0}
+    12%{opacity:.55}
+    100%{transform:translateY(-118vh) rotate(6deg);opacity:0}
+  }
 
   .stage{position:relative;z-index:2;width:100%;max-width:560px}
-  .card{
-    background:var(--card); border-radius:26px; padding:44px 36px; text-align:center;
-    box-shadow:var(--shadow); border:1px solid rgba(255,255,255,.7);
-    animation:pop .45s cubic-bezier(.2,1.1,.4,1);
+
+  /* progress dots */
+  .steps{display:flex;justify-content:center;gap:7px;margin-bottom:14px}
+  .steps i{
+    width:7px;height:7px;border-radius:50%;background:#eccddb;display:block;
+    transition:all .45s var(--ease);
   }
-  @keyframes pop{from{opacity:0;transform:translateY(14px) scale(.97)}to{opacity:1;transform:none}}
+  .steps i.done{background:var(--pink-soft)}
+  .steps i.now{width:24px;border-radius:99px;background:var(--pink);box-shadow:0 0 0 4px rgba(224,53,127,.13)}
+
+  .card{
+    position:relative;
+    background:var(--card); border-radius:28px; padding:44px 36px; text-align:center;
+    box-shadow:var(--shadow), 0 2px 0 rgba(255,255,255,.9) inset;
+    border:1px solid rgba(255,255,255,.85);
+    overflow:hidden;
+  }
+  /* thin festive ribbon along the top of the card */
+  .card::before{
+    content:'';position:absolute;top:0;left:0;right:0;height:5px;
+    background:linear-gradient(90deg,var(--pink),var(--gold),var(--violet),var(--mint),var(--pink));
+    background-size:300% 100%;animation:ribbon 7s linear infinite;
+  }
+  @keyframes ribbon{to{background-position:300% 0}}
+
   .screen{display:none}
-  .screen.active{display:block}
+  .screen.active{display:block;animation:screenIn .5s var(--ease) both}
+  @keyframes screenIn{from{opacity:0;transform:translateY(18px) scale(.975)}to{opacity:1;transform:none}}
+  .screen.leaving{display:block;animation:screenOut .22s ease-in both}
+  @keyframes screenOut{to{opacity:0;transform:translateY(-14px) scale(.985)}}
+
+  /* children stagger in behind their screen.
+     .emoji-badge is excluded — it has its own pop + float animation and this
+     shorthand would replace it. */
+  .screen.active > *:not(.emoji-badge){animation:riseIn .5s var(--ease) both}
+  .screen.active > *:not(.emoji-badge):nth-child(1){animation-delay:.06s}
+  .screen.active > *:not(.emoji-badge):nth-child(2){animation-delay:.12s}
+  .screen.active > *:not(.emoji-badge):nth-child(3){animation-delay:.18s}
+  .screen.active > *:not(.emoji-badge):nth-child(4){animation-delay:.24s}
+  .screen.active > *:not(.emoji-badge):nth-child(5){animation-delay:.30s}
+  .screen.active > *:not(.emoji-badge):nth-child(6){animation-delay:.36s}
+  .screen.active > *:not(.emoji-badge):nth-child(7){animation-delay:.42s}
+  @keyframes riseIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 
   h1{font-family:'Playfair Display',Georgia,serif;font-size:clamp(26px,5.2vw,36px);line-height:1.25;margin:0 0 10px;font-weight:700}
   .sub{font-family:'Playfair Display',Georgia,serif;font-style:italic;color:var(--ink-soft);font-size:15px;line-height:1.6;margin:0 0 26px}
   .avatar{width:96px;height:96px;border-radius:20px;object-fit:cover;margin:0 auto 22px;display:block;background:#eadfe4;box-shadow:0 8px 24px rgba(160,60,100,.18)}
-  .emoji-badge{width:96px;height:96px;border-radius:22px;display:grid;place-items:center;font-size:46px;margin:0 auto 22px;background:#fff0f5;box-shadow:0 8px 24px rgba(160,60,100,.16)}
+
+  /* animated birthday cake */
+  .cake{width:150px;max-width:56%;height:auto;display:block;margin:0 auto 6px;overflow:visible}
+  .cake .cakeBody{transform-origin:65px 117px;animation:cakeIn .7s var(--ease) both, cakeSway 4s ease-in-out .7s infinite}
+  @keyframes cakeIn{from{opacity:0;transform:translateY(20px) scale(.8)}to{opacity:1;transform:none}}
+  @keyframes cakeSway{0%,100%{transform:rotate(-1.6deg)}50%{transform:rotate(1.6deg)}}
+  .cake .flame{transform-box:fill-box;transform-origin:bottom center;animation:flicker .5s ease-in-out infinite alternate}
+  .cake .c2 .flame{animation-duration:.62s}
+  .cake .c3 .flame{animation-duration:.44s;animation-delay:.15s}
+  .cake .flame.in{animation-duration:.38s}
+  @keyframes flicker{
+    from{transform:scale(1,1) translateX(0);opacity:.92}
+    to  {transform:scale(.86,1.14) translateX(.6px);opacity:1}
+  }
+  .emoji-badge{
+    width:100px;height:100px;border-radius:26px;display:grid;place-items:center;font-size:48px;
+    margin:0 auto 22px;background:linear-gradient(150deg,#fff4f9,#ffeaf2);
+    box-shadow:0 10px 28px rgba(160,60,100,.16), 0 0 0 1px rgba(255,255,255,.9) inset;
+    animation:badgePop .6s var(--ease) both, badgeFloat 3.4s ease-in-out 0.6s infinite;
+  }
+  @keyframes badgePop{from{opacity:0;transform:scale(.5) rotate(-14deg)}to{opacity:1;transform:none}}
+  @keyframes badgeFloat{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-8px) rotate(2deg)}}
 
   .btn{
+    position:relative;overflow:hidden;
     font-family:'Playfair Display',Georgia,serif; font-size:17px; border:0; cursor:pointer;
-    padding:15px 34px; border-radius:999px; background:var(--pink); color:#fff; font-weight:600;
-    transition:transform .15s, box-shadow .15s, background .2s;
-    box-shadow:0 8px 22px rgba(224,53,127,.32);
+    padding:15px 34px; border-radius:999px; color:#fff; font-weight:600;
+    background:linear-gradient(135deg,#f0479a,#e0357f 55%,#c62a6e);
+    transition:transform .18s var(--ease), box-shadow .18s, filter .2s;
+    box-shadow:0 8px 22px rgba(224,53,127,.34);
   }
-  .btn:hover{transform:translateY(-2px);box-shadow:0 12px 26px rgba(224,53,127,.4)}
-  .btn:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none}
-  .btn.soft{background:var(--pink-soft);color:#7a2148;box-shadow:0 8px 22px rgba(242,168,198,.5)}
+  /* sheen sweep */
+  .btn::after{
+    content:'';position:absolute;top:0;left:-70%;width:45%;height:100%;
+    background:linear-gradient(100deg,transparent,rgba(255,255,255,.42),transparent);
+    transform:skewX(-20deg);animation:sheen 3.6s ease-in-out infinite;
+  }
+  @keyframes sheen{0%{left:-70%}45%,100%{left:130%}}
+  .btn:hover{transform:translateY(-3px) scale(1.02);box-shadow:0 14px 30px rgba(224,53,127,.44)}
+  .btn:active{transform:translateY(0) scale(.97)}
+  .btn:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none;filter:grayscale(.4)}
+  .btn:disabled::after{display:none}
+  .btn.soft{background:linear-gradient(135deg,#f6bcd4,#f2a8c6);color:#7a2148;box-shadow:0 8px 22px rgba(242,168,198,.5)}
   .btn.wide{width:100%;margin-top:8px}
+  /* pulse to draw the eye to the enabled primary action */
+  .btn.wide:not(:disabled){animation:readyPulse 2.4s ease-in-out infinite}
+  @keyframes readyPulse{0%,100%{box-shadow:0 8px 22px rgba(224,53,127,.34)}50%{box-shadow:0 8px 30px rgba(224,53,127,.55)}}
 
-  .ask-row{position:relative;height:120px;margin-top:8px}
-  #yesBtn{position:absolute;left:14%;top:26px}
+  .ask-row{position:relative;height:130px;margin-top:8px}
+  #yesBtn{position:absolute;left:12%;top:30px;animation:yesBeckon 1.9s ease-in-out infinite}
+  @keyframes yesBeckon{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
   #noBtn{
-    position:absolute; left:58%; top:6px; background:#cbb2dd; color:#4a2a5e;
-    box-shadow:0 8px 22px rgba(203,178,221,.5); transition:left .22s ease, top .22s ease, transform .15s;
+    position:absolute; left:58%; top:6px;
+    background:linear-gradient(135deg,#d9c2e8,#cbb2dd); color:#4a2a5e;
+    box-shadow:0 8px 22px rgba(203,178,221,.5);
+    transition:left .3s var(--ease), top .3s var(--ease), transform .2s var(--ease);
   }
-  #yesBtn{transition:transform .2s, font-size .2s, padding .2s}
+  #noBtn::after{display:none}
 
   .field{text-align:left;margin-bottom:18px}
   .label{font-family:'Playfair Display',serif;font-weight:600;font-size:15px;display:block;margin-bottom:8px}
   input[type=date],select{
-    width:100%;padding:14px 15px;border-radius:12px;border:1px solid #e6d3db;background:#fff;
+    width:100%;padding:15px;border-radius:14px;border:1.5px solid #f0dde5;background:#fff;
     font-family:Inter,sans-serif;font-size:15px;color:var(--ink);outline:none;
+    transition:border-color .2s, box-shadow .2s, transform .2s var(--ease);
   }
-  input[type=date]:focus,select:focus{border-color:var(--pink-soft);box-shadow:0 0 0 3px var(--pink-pale)}
+  input[type=date]:hover,select:hover{border-color:#e8c3d4}
+  input[type=date]:focus,select:focus{
+    border-color:var(--pink);box-shadow:0 0 0 4px var(--pink-pale);transform:translateY(-1px);
+  }
+  .field.filled .label::after{content:' ✓';color:var(--mint);font-weight:700}
 
   .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:8px 0 24px}
   .tile{
-    background:#fff;border:1.5px solid #efe1e7;border-radius:16px;padding:16px 8px;cursor:pointer;
-    transition:all .16s; font-size:13px; color:var(--ink-soft); font-weight:500;
+    position:relative;background:#fff;border:1.5px solid #f0e2e8;border-radius:18px;
+    padding:16px 8px;cursor:pointer; font-size:13px; color:var(--ink-soft); font-weight:500;
+    transition:transform .2s var(--ease), border-color .2s, box-shadow .2s, background .2s;
+    animation:tileIn .45s var(--ease) both;
   }
-  .tile span{display:block;font-size:30px;margin-bottom:6px}
-  .tile:hover{transform:translateY(-3px);border-color:var(--pink-soft)}
-  .tile.sel{border-color:var(--pink);background:#fff4f8;color:var(--pink);box-shadow:0 6px 18px rgba(224,53,127,.16)}
+  @keyframes tileIn{from{opacity:0;transform:translateY(16px) scale(.9)}to{opacity:1;transform:none}}
+  .tile span{display:block;font-size:31px;margin-bottom:6px;transition:transform .28s var(--ease)}
+  .tile:hover{transform:translateY(-5px);border-color:var(--pink-soft);box-shadow:0 10px 22px rgba(224,53,127,.13)}
+  .tile:hover span{transform:scale(1.18) rotate(-7deg)}
+  .tile:active{transform:translateY(-1px) scale(.96)}
+  .tile.sel{
+    border-color:var(--pink);background:linear-gradient(150deg,#fff6fa,#ffeaf3);color:var(--pink);
+    box-shadow:0 10px 24px rgba(224,53,127,.2);animation:picked .45s var(--ease)
+  }
+  @keyframes picked{0%{transform:scale(1)}45%{transform:scale(1.12)}100%{transform:scale(1)}}
+  .tile.sel span{transform:scale(1.1)}
+  .tile.sel::after{
+    content:'✓';position:absolute;top:6px;right:8px;font-size:12px;font-weight:700;
+    color:#fff;background:var(--pink);width:19px;height:19px;border-radius:50%;
+    display:grid;place-items:center;animation:badgePop .35s var(--ease) both;
+  }
 
   /* animated dog + gift */
   .dogift{width:200px;max-width:78%;height:auto;display:block;margin:0 auto 4px;overflow:visible}
@@ -153,18 +273,82 @@
   .share input{flex:1;padding:11px 12px;border-radius:10px;border:1px solid #e6d3db;font-size:12.5px;color:var(--ink-soft);background:#fff}
   .share button{padding:0 16px;border-radius:10px;border:0;background:var(--pink-soft);color:#7a2148;font-weight:600;cursor:pointer}
   canvas#confetti{position:fixed;inset:0;pointer-events:none;z-index:30}
-  @media(max-width:480px){.card{padding:34px 22px}.grid{gap:9px}#yesBtn{left:8%}#noBtn{left:56%}}
+  @media(max-width:480px){
+    .card{padding:32px 20px;border-radius:24px}
+    .grid{gap:9px}
+    .tile{padding:13px 5px;border-radius:15px}
+    .tile span{font-size:27px}
+    #yesBtn{left:6%}
+    #noBtn{left:54%}
+    .btn{padding:14px 26px;font-size:16px}
+    body::before,body::after{filter:blur(50px);opacity:.26}
+  }
+
+  /* one switch to calm everything down */
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{
+      animation-duration:.01ms !important; animation-iteration-count:1 !important;
+      transition-duration:.01ms !important; scroll-behavior:auto !important;
+    }
+    #petals{display:none}
+  }
 </style>
 </head>
 <body>
 <div id="petals"></div>
 <canvas id="confetti"></canvas>
 <div class="stage">
+  <div class="steps" id="steps" aria-hidden="true">
+    <i></i><i></i><i></i><i></i><i></i>
+  </div>
   <div class="card">
 
     <!-- 1. THE ASK -->
     <section class="screen active" id="s1">
-      <img class="avatar" id="askPhoto" alt="" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='96' height='96'><rect width='96' height='96' fill='%23eadfe4'/><text x='48' y='62' font-size='42' text-anchor='middle'>🎂</text></svg>" />
+      <svg class="cake" viewBox="0 0 130 130" role="img" aria-label="A birthday cake with lit candles">
+        <ellipse cx="65" cy="118" rx="44" ry="6" fill="#000" opacity=".07"/>
+        <g class="cakeBody">
+          <!-- candles -->
+          <g class="candle c1">
+            <rect x="40" y="34" width="6" height="22" rx="2.5" fill="#f2559a"/>
+            <rect x="40" y="34" width="6" height="22" rx="2.5" fill="#fff" opacity=".35" style="clip-path:inset(0 0 55% 0)"/>
+            <ellipse class="flame" cx="43" cy="27" rx="4" ry="7" fill="#ffb703"/>
+            <ellipse class="flame in" cx="43" cy="29" rx="1.9" ry="3.6" fill="#fff3b0"/>
+          </g>
+          <g class="candle c2">
+            <rect x="62" y="28" width="6" height="28" rx="2.5" fill="#9b5de5"/>
+            <rect x="62" y="28" width="6" height="28" rx="2.5" fill="#fff" opacity=".3" style="clip-path:inset(0 0 55% 0)"/>
+            <ellipse class="flame" cx="65" cy="21" rx="4.2" ry="7.4" fill="#ffb703"/>
+            <ellipse class="flame in" cx="65" cy="23" rx="2" ry="3.8" fill="#fff3b0"/>
+          </g>
+          <g class="candle c3">
+            <rect x="84" y="34" width="6" height="22" rx="2.5" fill="#43c6ac"/>
+            <rect x="84" y="34" width="6" height="22" rx="2.5" fill="#fff" opacity=".3" style="clip-path:inset(0 0 55% 0)"/>
+            <ellipse class="flame" cx="87" cy="27" rx="4" ry="7" fill="#ffb703"/>
+            <ellipse class="flame in" cx="87" cy="29" rx="1.9" ry="3.6" fill="#fff3b0"/>
+          </g>
+
+          <!-- top tier -->
+          <rect x="34" y="54" width="62" height="26" rx="6" fill="#f7d9e6"/>
+          <path d="M34 60 q7 9 13 0 q7 9 13 0 q7 9 13 0 q7 9 13 0 q6 7 10 1 V56 q0-2-3-2 H37 q-3 0-3 2z" fill="#fff"/>
+          <circle cx="46" cy="70" r="2" fill="#f2559a"/>
+          <circle cx="61" cy="74" r="2" fill="#ffc94d"/>
+          <circle cx="76" cy="69" r="2" fill="#9b5de5"/>
+          <circle cx="88" cy="73" r="2" fill="#43c6ac"/>
+
+          <!-- bottom tier -->
+          <rect x="24" y="80" width="82" height="30" rx="7" fill="#e894b8"/>
+          <path d="M24 86 q8 10 15 0 q8 10 16 0 q8 10 16 0 q8 10 16 0 q7 8 11 1 V82 q0-2-3-2 H27 q-3 0-3 2z" fill="#fff5f9"/>
+          <circle cx="38" cy="98" r="2.2" fill="#ffc94d"/>
+          <circle cx="56" cy="102" r="2.2" fill="#9b5de5"/>
+          <circle cx="74" cy="97" r="2.2" fill="#43c6ac"/>
+          <circle cx="92" cy="101" r="2.2" fill="#f2559a"/>
+
+          <!-- plate -->
+          <rect x="16" y="110" width="98" height="7" rx="3.5" fill="#fdfaf7"/>
+          <rect x="16" y="110" width="98" height="3" rx="1.5" fill="#fff"/>
+        </g>
+      </svg>
       <h1>🎂 Will you give me a birthday treat? 🎂</h1>
       <p class="sub">it's your birthday. you know what that means 👀</p>
       <div class="ask-row">
@@ -371,28 +555,70 @@ function track(step, detail){
 
 track('visit', document.referrer || 'direct');
 
-/* ---------------- petals ---------------- */
+/* ---------------- ambient: confetti drift + balloons ---------------- */
 const petalBox = document.getElementById('petals');
-setInterval(() => {
-  if (document.hidden) return;
+const CALM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function drop(){
+  if (document.hidden || CALM) return;
   const p = document.createElement('div');
   p.className = 'petal';
-  p.textContent = ['♥','🎂','🎉','🎈','🎊','🎁'][Math.floor(Math.random()*6)];
+  p.textContent = ['🎂','🎉','🎈','🎊','🎁','✨','🍰'][Math.floor(Math.random()*7)];
   p.style.left = Math.random()*100 + 'vw';
-  p.style.fontSize = (10 + Math.random()*14) + 'px';
-  p.style.animationDuration = (7 + Math.random()*7) + 's';
+  p.style.fontSize = (11 + Math.random()*15) + 'px';
+  p.style.setProperty('--sway', (Math.random()*120 - 60) + 'px');
+  p.style.animationDuration = (8 + Math.random()*7) + 's';
   petalBox.appendChild(p);
-  setTimeout(() => p.remove(), 15000);
-}, 550);
+  setTimeout(() => p.remove(), 16000);
+}
+function balloon(){
+  if (document.hidden || CALM) return;
+  const b = document.createElement('div');
+  b.className = 'balloon';
+  b.textContent = ['🎈','🎈','🎈','🪅'][Math.floor(Math.random()*4)];
+  b.style.left = Math.random()*95 + 'vw';
+  b.style.fontSize = (24 + Math.random()*22) + 'px';
+  b.style.animationDuration = (13 + Math.random()*9) + 's';
+  petalBox.appendChild(b);
+  setTimeout(() => b.remove(), 24000);
+}
+setInterval(drop, 620);
+setInterval(balloon, 3400);
+for (let i = 0; i < 5; i++) setTimeout(drop, i * 160);
 
 /* ---------------- screens ---------------- */
-function go(id){
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  const el = document.getElementById(id);
-  el.classList.add('active');
-  el.style.animation = 'none'; void el.offsetWidth; el.style.animation = '';
-  window.scrollTo({top:0, behavior:'smooth'});
+const ORDER = ['s1','s2','s3','s4','s5'];
+const stepDots = [...document.querySelectorAll('#steps i')];
+
+function paintSteps(id){
+  const i = ORDER.indexOf(id);
+  stepDots.forEach((d, n) => {
+    d.className = n < i ? 'done' : (n === i ? 'now' : '');
+  });
 }
+
+function go(id){
+  const current = document.querySelector('.screen.active');
+  const next = document.getElementById(id);
+  if (!next || current === next) return;
+
+  const show = () => {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active','leaving'));
+    next.classList.add('active');
+    // restart the entrance animation even if this screen has been shown before
+    next.style.animation = 'none'; void next.offsetWidth; next.style.animation = '';
+    paintSteps(id);
+    window.scrollTo({ top: 0, behavior: CALM ? 'auto' : 'smooth' });
+  };
+
+  if (current && !CALM) {
+    current.classList.add('leaving');
+    setTimeout(show, 190);            // let the outgoing screen fade out first
+  } else {
+    show();
+  }
+}
+paintSteps('s1');
 document.querySelectorAll('[data-go]').forEach(b => b.onclick = () => {
   if (b.dataset.go === 's3') track('intro_done');
   go(b.dataset.go);
@@ -437,8 +663,13 @@ for (let h = 8; h <= 23; h++){
     timeIn.insertAdjacentHTML('beforeend', `<option value="${v}">${h12}:${m} ${ampm}</option>`);
   }
 }
-function checkWhen(){ whenBtn.disabled = !(dateIn.value && timeIn.value); }
-dateIn.oninput = timeIn.oninput = checkWhen;
+function checkWhen(){
+  whenBtn.disabled = !(dateIn.value && timeIn.value);
+  // tick the label once a field has a value
+  dateIn.closest('.field').classList.toggle('filled', !!dateIn.value);
+  timeIn.closest('.field').classList.toggle('filled', !!timeIn.value);
+}
+dateIn.oninput = timeIn.oninput = timeIn.onchange = checkWhen;
 whenBtn.onclick = () => {
   answers.date = dateIn.value; answers.time = timeIn.value;
   track('date_time', answers.date + ' ' + answers.time);
@@ -447,15 +678,16 @@ whenBtn.onclick = () => {
 
 /* ---------------- screen 4: food ---------------- */
 const FOODS = [
-  ['🍛','Biriyani'], ['🍕','Pizza'],  ['🍔','Burgers'],
-  ['🍣','Sushi'],    ['🍝','Pasta'],  ['🌮','Tacos'],
+  ['🍛','Biriyani'], ['🥞','Dosa'],   ['🫓','Parotta'],
+  ['🐟','Fish'],     ['🍕','Pizza'],  ['🍔','Burgers'],
   ['🍜','Ramen'],    ['🥤','Drinks'], ['🍰','Dessert']
 ];
 const grid = document.getElementById('foodGrid');
 const foodBtn = document.getElementById('foodBtn');
-FOODS.forEach(([e,n]) => {
+FOODS.forEach(([e,n], i) => {
   const t = document.createElement('div');
   t.className = 'tile'; t.innerHTML = `<span>${e}</span>${n}`;
+  t.style.animationDelay = (0.05 + i * 0.045) + 's';   // stagger them in
   t.onclick = () => {
     grid.querySelectorAll('.tile').forEach(x => x.classList.remove('sel'));
     t.classList.add('sel'); answers.food = n; foodBtn.disabled = false;

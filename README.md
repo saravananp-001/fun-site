@@ -21,7 +21,7 @@ Then open:
    runs away (and shrinks, while YES grows)
 2. **The surprise** — "WAIT YOU ACTUALLY SAID YES??"
 3. **When** — date picker + time dropdown (8:00 AM → 10:30 PM, 30-min steps)
-4. **What are we eating** — biriyani / pizza / burgers / sushi / pasta / tacos /
+4. **What are we eating** — biriyani / dosa / parotta / fish / pizza / burgers /
    ramen / drinks / dessert
 5. **The confirmation** — recap card + "I accept" button that saves to the database
 
