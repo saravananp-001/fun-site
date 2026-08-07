@@ -91,6 +91,33 @@ Check `ls -la /var/lib/treat` is owned by `treat`.
 available. It still works, writing to `.jsonl` files instead. Upgrade Node if
 you want real SQLite.
 
+## Getting off the raw IP
+
+Sharing `http://203.0.113.5/` works but looks sketchy. Three ways to fix it,
+best first:
+
+**1. Free subdomain + real HTTPS.** Register a name at duckdns.org, deSEC or
+afraid.org, point its A record at your server IP, then:
+
+```bash
+sudo apt-get install -y certbot python3-certbot-nginx
+sudo nano /etc/nginx/sites-available/treat      # server_name yourname.duckdns.org;
+sudo certbot --nginx -d yourname.duckdns.org
+```
+
+End-to-end HTTPS, no middleman, free. This is the one to do.
+
+**2. Your own domain.** Same as above with a domain you bought — `.xyz` and
+`.site` are a couple of dollars a year.
+
+**3. Vercel in front.** See `vercel-proxy/` — a `vercel.json` with a rewrite
+gives you `https://something.vercel.app` without buying anything. Note the
+Vercel-to-your-server hop stays plain HTTP.
+
+**GitHub Pages can't do this.** It serves static files only, with no way to
+forward requests to your server. A redirect page would just put the IP back in
+the address bar. Keep the code on GitHub, but host the site on your server.
+
 ## Notes
 
 - `app.set('trust proxy', true)` plus the `X-Forwarded-For` header in the nginx

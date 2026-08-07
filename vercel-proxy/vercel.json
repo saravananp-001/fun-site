@@ -1,0 +1,17 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "rewrites": [
+    {
+      "source": "/:path*",
+      "destination": "http://YOUR_SERVER_IP/:path*"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/admin",
+      "headers": [
+        { "key": "X-Robots-Tag", "value": "noindex, nofollow" }
+      ]
+    }
+  ]
+}
