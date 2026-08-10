@@ -17,6 +17,8 @@ Then open:
 
 ## The 5 screens
 
+0. **The greeting** — "Happy Birthday" with a burst of flowers across the
+   screen. Personalised if the link carries `?to=Name`.
 1. **The ask** — "Will you give me a birthday treat?" with a `no` button that
    runs away (and shrinks, while YES grows)
 2. **The surprise** — "WAIT YOU ACTUALLY SAID YES??"
@@ -46,6 +48,7 @@ session id — on every row, not just the final response. Visitors without a
 | Step | When |
 |---|---|
 | `visit` | page opened |
+| `greeting_done` | tapped past the birthday wish |
 | `no_dodge` | tried to click "no" (logged at dodge 1, 5, 10) |
 | `yes` | clicked YES — detail records how many dodges it took |
 | `intro_done` | past the surprise screen |

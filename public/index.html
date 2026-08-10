@@ -3,8 +3,21 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>it's your birthday 🎂</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎂</text></svg>" />
+<!-- personal page: keep it out of search results -->
+<meta name="robots" content="noindex, nofollow, noarchive, noimageindex" />
+<!-- Spoiler-free link preview.
+     Chat apps read these tags, NOT the page body — so keep them vague and
+     never name the occasion or the person. No og:image on purpose: an image
+     card would give the game away before she taps. -->
+<title>oru vishayam...</title>
+<meta property="og:title" content="oru vishayam..." />
+<meta property="og:description" content="open pannu da 👀" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="oru vishayam..." />
+<meta name="twitter:description" content="open pannu da 👀" />
+<meta name="theme-color" content="#e0357f" />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👀</text></svg>" />
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
 <!-- fetch the celebration gif early so it plays instantly when the overlay opens -->
 <link rel="preload" as="image" href="/best-friends-bestie.gif" />
@@ -103,18 +116,62 @@
   .sub{font-family:'Playfair Display',Georgia,serif;font-style:italic;color:var(--ink-soft);font-size:15px;line-height:1.6;margin:0 0 26px}
   .avatar{width:96px;height:96px;border-radius:20px;object-fit:cover;margin:0 auto 22px;display:block;background:#eadfe4;box-shadow:0 8px 24px rgba(160,60,100,.18)}
 
-  /* animated birthday cake */
-  .cake{width:150px;max-width:56%;height:auto;display:block;margin:0 auto 6px;overflow:visible}
-  .cake .cakeBody{transform-origin:65px 117px;animation:cakeIn .7s var(--ease) both, cakeSway 4s ease-in-out .7s infinite}
-  @keyframes cakeIn{from{opacity:0;transform:translateY(20px) scale(.8)}to{opacity:1;transform:none}}
-  @keyframes cakeSway{0%,100%{transform:rotate(-1.6deg)}50%{transform:rotate(1.6deg)}}
-  .cake .flame{transform-box:fill-box;transform-origin:bottom center;animation:flicker .5s ease-in-out infinite alternate}
-  .cake .c2 .flame{animation-duration:.62s}
-  .cake .c3 .flame{animation-duration:.44s;animation-delay:.15s}
-  .cake .flame.in{animation-duration:.38s}
-  @keyframes flicker{
-    from{transform:scale(1,1) translateX(0);opacity:.92}
-    to  {transform:scale(.86,1.14) translateX(.6px);opacity:1}
+  /* Ghibli-style painted scene with portrait */
+  .scene{
+    width:270px;max-width:88%;height:auto;display:block;margin:0 auto 18px;
+    border-radius:18px;
+    box-shadow:0 14px 34px rgba(90,110,90,.24), 0 0 0 4px #fffdf7, 0 0 0 6px #f0d9a8;
+    animation:sceneIn .7s var(--ease) both;
+  }
+  @keyframes sceneIn{from{opacity:0;transform:translateY(18px) scale(.94)}to{opacity:1;transform:none}}
+  .scene .cl{animation:driftby 42s linear infinite}
+  .scene .cl2{animation-duration:64s}
+  .scene .cl3{animation-duration:88s}
+  @keyframes driftby{from{transform:translateX(-70px)}to{transform:translateX(300px)}}
+  .scene .bird{animation:flyby 30s linear infinite}
+  @keyframes flyby{from{transform:translate(-30px,6px)}to{transform:translate(300px,-14px)}}
+  .scene .sunGlow{animation:glowPulse 7s ease-in-out infinite}
+  @keyframes glowPulse{0%,100%{opacity:.55}50%{opacity:.9}}
+  .scene .frame{transform-origin:130px 90px;animation:frameBob 6s ease-in-out infinite}
+  @keyframes frameBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+  .scene .rays{transform-origin:196px 104px;animation:rayBreathe 9s ease-in-out infinite}
+  @keyframes rayBreathe{0%,100%{opacity:.32;transform:rotate(-1.5deg)}50%{opacity:.6;transform:rotate(1.5deg)}}
+  .scene .ripple path{animation:rippleOut 5s ease-in-out infinite}
+  .scene .ripple path:nth-child(2){animation-delay:1.6s}
+  .scene .ripple path:nth-child(3){animation-delay:3.2s}
+  @keyframes rippleOut{0%,100%{opacity:.2;transform:scaleX(.92)}50%{opacity:.6;transform:scaleX(1.06)}}
+  .scene .gr{transform-box:fill-box;transform-origin:bottom center;animation:grassSway 4.5s ease-in-out infinite alternate}
+  .scene .g2{animation-delay:.8s}.scene .g3{animation-delay:1.6s}
+  @keyframes grassSway{from{transform:rotate(-5deg)}to{transform:rotate(5deg)}}
+  .scene .bloom circle{animation:bloomTwinkle 4s ease-in-out infinite}
+  .scene .bloom circle:nth-child(even){animation-delay:1.3s}
+  @keyframes bloomTwinkle{0%,100%{opacity:.75}50%{opacity:1}}
+  /* fireflies drifting over the water */
+  .scene .seed{transform-box:fill-box;transform-origin:center;animation:seedFloat 11s ease-in-out infinite;opacity:0}
+  .scene .s2{animation-delay:2.2s}.scene .s3{animation-delay:4.4s}
+  .scene .s4{animation-delay:6.6s}.scene .s5{animation-delay:8.8s}
+  @keyframes seedFloat{
+    0%  {opacity:0;transform:translate(0,10px) scale(.6)}
+    12% {opacity:.95;transform:translate(8px,0) scale(1)}
+    50% {opacity:.7; transform:translate(26px,-30px) scale(.85)}
+    100%{opacity:0;transform:translate(48px,-64px) scale(.5)}
+  }
+  /* her portrait; hidden until confirmed loaded, so a missing file
+     leaves the drawn princess showing instead of a broken image */
+  .scene #herPhoto{opacity:0;transition:opacity .7s ease}
+  .scene #herPhoto.ready{opacity:1}
+
+  /* drawn princess — the fallback behind the photo */
+  .scene .princess{transform-origin:130px 134px;animation:curtsy 5s ease-in-out infinite}
+  @keyframes curtsy{
+    0%,100%{transform:translateY(0) rotate(-1.2deg)}
+    50%    {transform:translateY(-2px) rotate(1.2deg)}
+  }
+  .scene .sparkle path{transform-box:fill-box;transform-origin:center;animation:sparkleTwinkle 2.2s ease-in-out infinite}
+  .scene .sp2{animation-delay:.55s}.scene .sp3{animation-delay:1.1s}.scene .sp4{animation-delay:1.65s}
+  @keyframes sparkleTwinkle{
+    0%,100%{opacity:0;transform:scale(.3) rotate(0deg)}
+    50%    {opacity:1;transform:scale(1) rotate(45deg)}
   }
   .emoji-badge{
     width:100px;height:100px;border-radius:26px;display:grid;place-items:center;font-size:48px;
@@ -158,6 +215,8 @@
     background:linear-gradient(135deg,#d9c2e8,#cbb2dd); color:#4a2a5e;
     box-shadow:0 8px 22px rgba(203,178,221,.5);
     transition:left .3s var(--ease), top .3s var(--ease), transform .2s var(--ease);
+    /* the label grows to whole sentences, so keep it on one line and compact */
+    font-size:14px; padding:11px 18px; white-space:nowrap; max-width:88%;
   }
   #noBtn::after{display:none}
 
@@ -249,6 +308,54 @@
   @keyframes catsFloat{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-9px) rotate(1deg)}}
   @media (prefers-reduced-motion: reduce){ .party *{animation:none !important} }
 
+  /* ---- intro: happy birthday + flower blast ---- */
+  .bigwish{
+    font-family:'Playfair Display',Georgia,serif;font-weight:700;line-height:1.1;
+    font-size:clamp(34px,9vw,58px);margin:6px 0 4px;
+    background:linear-gradient(100deg,#e0357f,#ff8fb1,#ffc94d,#9b5de5,#e0357f);
+    background-size:280% 100%;-webkit-background-clip:text;background-clip:text;
+    -webkit-text-fill-color:transparent;color:var(--pink);
+    animation:wishIn .9s var(--ease) both, wishShine 6s linear .9s infinite;
+  }
+  @keyframes wishIn{
+    0%  {opacity:0;transform:scale(.5) rotate(-7deg)}
+    60% {opacity:1;transform:scale(1.12) rotate(2deg)}
+    100%{opacity:1;transform:none}
+  }
+  @keyframes wishShine{to{background-position:280% 0}}
+  .wishname{
+    font-family:'Playfair Display',Georgia,serif;font-style:italic;
+    font-size:clamp(19px,5vw,26px);color:var(--ink);margin:0 0 6px;
+    animation:riseIn .6s var(--ease) .5s both;
+  }
+  .bouquet{font-size:clamp(38px,11vw,58px);letter-spacing:6px;margin:12px 0 4px;display:block}
+  .bouquet span{display:inline-block;animation:bloomPop .7s var(--ease) both}
+  .bouquet span:nth-child(1){animation-delay:.15s}
+  .bouquet span:nth-child(2){animation-delay:.28s}
+  .bouquet span:nth-child(3){animation-delay:.41s}
+  .bouquet span:nth-child(4){animation-delay:.54s}
+  .bouquet span:nth-child(5){animation-delay:.67s}
+  @keyframes bloomPop{
+    0%  {opacity:0;transform:scale(0) rotate(-90deg)}
+    65% {opacity:1;transform:scale(1.25) rotate(8deg)}
+    100%{opacity:1;transform:none}
+  }
+  #introBtn{animation:riseIn .6s var(--ease) 1.1s both, readyPulse 2.4s ease-in-out 1.7s infinite}
+
+  /* the blast itself */
+  #blast{position:fixed;inset:0;pointer-events:none;z-index:25;overflow:hidden}
+  .flower{
+    position:absolute;left:50%;top:44%;
+    font-size:var(--sz,26px);
+    animation:blastOut var(--dur,1.5s) cubic-bezier(.15,.75,.35,1) forwards;
+    will-change:transform,opacity;
+  }
+  @keyframes blastOut{
+    0%  {opacity:0;transform:translate(-50%,-50%) scale(.2) rotate(0deg)}
+    12% {opacity:1}
+    100%{opacity:0;transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(var(--end,1)) rotate(var(--rot,320deg))}
+  }
+
   .hearts{color:var(--pink-soft);letter-spacing:7px;font-size:18px;margin:6px 0 22px}
   .recap{background:#fff4f8;border-radius:16px;padding:18px;margin:20px 0 6px;text-align:left;font-size:14.5px;line-height:1.9;color:var(--ink-soft)}
   .recap b{color:var(--ink);font-weight:600}
@@ -264,8 +371,8 @@
     .grid{gap:9px}
     .tile{padding:13px 5px;border-radius:15px}
     .tile span{font-size:27px}
-    #yesBtn{left:6%}
-    #noBtn{left:54%}
+    #yesBtn{left:5%}
+    #noBtn{left:52%;font-size:12.5px;padding:10px 13px}
     .btn{padding:14px 26px;font-size:16px}
     body::before,body::after{filter:blur(50px);opacity:.26}
   }
@@ -276,63 +383,225 @@
       animation-duration:.01ms !important; animation-iteration-count:1 !important;
       transition-duration:.01ms !important; scroll-behavior:auto !important;
     }
-    #petals{display:none}
+    #petals,#blast{display:none}
+    /* the gradient-clipped heading needs a solid colour once its animation is off */
+    .bigwish{-webkit-text-fill-color:var(--pink);background:none}
   }
 </style>
 </head>
 <body>
 <div id="petals"></div>
+<div id="blast"></div>
 <canvas id="confetti"></canvas>
 <div class="stage">
   <div class="steps" id="steps" aria-hidden="true">
     <i></i><i></i><i></i><i></i><i></i>
   </div>
+  <!-- dots are hidden on the greeting screen; it isn't a step in the flow -->
   <div class="card">
 
+    <!-- 0. HAPPY BIRTHDAY -->
+    <section class="screen active" id="s0">
+      <span class="bouquet"><span>🌸</span><span>🌺</span><span>💐</span><span>🌼</span><span>🌷</span></span>
+      <h1 class="bigwish">Happy Birthday vidya</h1>
+      <p class="wishname" id="wishName">to the best one 🎂</p>
+      <button class="btn wide" id="introBtn">aww thank you 🥹</button>
+    </section>
+
     <!-- 1. THE ASK -->
-    <section class="screen active" id="s1">
-      <svg class="cake" viewBox="0 0 130 130" role="img" aria-label="A birthday cake with lit candles">
-        <ellipse cx="65" cy="118" rx="44" ry="6" fill="#000" opacity=".07"/>
-        <g class="cakeBody">
-          <!-- candles -->
-          <g class="candle c1">
-            <rect x="40" y="34" width="6" height="22" rx="2.5" fill="#f2559a"/>
-            <rect x="40" y="34" width="6" height="22" rx="2.5" fill="#fff" opacity=".35" style="clip-path:inset(0 0 55% 0)"/>
-            <ellipse class="flame" cx="43" cy="27" rx="4" ry="7" fill="#ffb703"/>
-            <ellipse class="flame in" cx="43" cy="29" rx="1.9" ry="3.6" fill="#fff3b0"/>
-          </g>
-          <g class="candle c2">
-            <rect x="62" y="28" width="6" height="28" rx="2.5" fill="#9b5de5"/>
-            <rect x="62" y="28" width="6" height="28" rx="2.5" fill="#fff" opacity=".3" style="clip-path:inset(0 0 55% 0)"/>
-            <ellipse class="flame" cx="65" cy="21" rx="4.2" ry="7.4" fill="#ffb703"/>
-            <ellipse class="flame in" cx="65" cy="23" rx="2" ry="3.8" fill="#fff3b0"/>
-          </g>
-          <g class="candle c3">
-            <rect x="84" y="34" width="6" height="22" rx="2.5" fill="#43c6ac"/>
-            <rect x="84" y="34" width="6" height="22" rx="2.5" fill="#fff" opacity=".3" style="clip-path:inset(0 0 55% 0)"/>
-            <ellipse class="flame" cx="87" cy="27" rx="4" ry="7" fill="#ffb703"/>
-            <ellipse class="flame in" cx="87" cy="29" rx="1.9" ry="3.6" fill="#fff3b0"/>
+    <section class="screen" id="s1">
+      <!-- Painted landscape framing her portrait.
+           The circle holds public/her.png, with a drawn fairytale princess
+           underneath as the fallback if that file goes missing. -->
+      <svg class="scene" viewBox="0 0 260 200" role="img" aria-label="A painted lakeside sunset scene framing a portrait">
+        <defs>
+          <linearGradient id="skyG" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0"   stop-color="#5b8bb8"/>
+            <stop offset=".28" stop-color="#9ec5dd"/>
+            <stop offset=".55" stop-color="#f6cfa8"/>
+            <stop offset=".78" stop-color="#f7b48c"/>
+            <stop offset="1"   stop-color="#f2a08a"/>
+          </linearGradient>
+          <linearGradient id="lakeG" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#f7bd93"/><stop offset=".5" stop-color="#c9a6bd"/><stop offset="1" stop-color="#7d8fb5"/>
+          </linearGradient>
+          <linearGradient id="hillFar" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#9db8b0"/><stop offset="1" stop-color="#7fa39c"/>
+          </linearGradient>
+          <linearGradient id="hillMid" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#7aab7a"/><stop offset="1" stop-color="#5c8f60"/>
+          </linearGradient>
+          <linearGradient id="hillNear" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#4f8450"/><stop offset="1" stop-color="#3a6b42"/>
+          </linearGradient>
+          <radialGradient id="sunG"><stop offset="0" stop-color="#fff3c4" stop-opacity="1"/><stop offset=".45" stop-color="#ffd89b" stop-opacity=".55"/><stop offset="1" stop-color="#ffd89b" stop-opacity="0"/></radialGradient>
+          <linearGradient id="rayG" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#fff6d8" stop-opacity=".55"/><stop offset="1" stop-color="#fff6d8" stop-opacity="0"/>
+          </linearGradient>
+          <linearGradient id="vign" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#3a2b4a" stop-opacity=".22"/><stop offset=".35" stop-color="#3a2b4a" stop-opacity="0"/>
+          </linearGradient>
+          <linearGradient id="ballG" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#3f5a86"/><stop offset=".5" stop-color="#6f8ec0"/><stop offset="1" stop-color="#c8ddf4"/>
+          </linearGradient>
+          <clipPath id="sceneClip"><rect x="0" y="0" width="260" height="200" rx="18"/></clipPath>
+          <clipPath id="faceClip"><circle cx="130" cy="90" r="44"/></clipPath>
+          <clipPath id="lakeClip"><rect x="0" y="132" width="260" height="68"/></clipPath>
+        </defs>
+
+        <g clip-path="url(#sceneClip)">
+          <rect width="260" height="200" fill="url(#skyG)"/>
+
+          <!-- sun and its glow -->
+          <circle class="sunGlow" cx="196" cy="104" r="74" fill="url(#sunG)"/>
+          <circle cx="196" cy="104" r="19" fill="#fff6d8"/>
+
+          <!-- god rays -->
+          <g class="rays" opacity=".5">
+            <path d="M196 104 L150 -20 L176 -20z" fill="url(#rayG)"/>
+            <path d="M196 104 L204 -20 L230 -20z" fill="url(#rayG)"/>
+            <path d="M196 104 L252 -14 L266 4z"  fill="url(#rayG)"/>
           </g>
 
-          <!-- top tier -->
-          <rect x="34" y="54" width="62" height="26" rx="6" fill="#f7d9e6"/>
-          <path d="M34 60 q7 9 13 0 q7 9 13 0 q7 9 13 0 q7 9 13 0 q6 7 10 1 V56 q0-2-3-2 H37 q-3 0-3 2z" fill="#fff"/>
-          <circle cx="46" cy="70" r="2" fill="#f2559a"/>
-          <circle cx="61" cy="74" r="2" fill="#ffc94d"/>
-          <circle cx="76" cy="69" r="2" fill="#9b5de5"/>
-          <circle cx="88" cy="73" r="2" fill="#43c6ac"/>
+          <!-- flock -->
+          <g class="bird" fill="none" stroke="#4e6274" stroke-width="1.2" stroke-linecap="round" opacity=".8">
+            <path d="M40 40 q3.5 -3.5 7 0 q3.5 -3.5 7 0"/>
+            <path d="M62 50 q2.8 -2.8 5.6 0 q2.8 -2.8 5.6 0"/>
+            <path d="M52 62 q2.2 -2.2 4.4 0 q2.2 -2.2 4.4 0"/>
+          </g>
 
-          <!-- bottom tier -->
-          <rect x="24" y="80" width="82" height="30" rx="7" fill="#e894b8"/>
-          <path d="M24 86 q8 10 15 0 q8 10 16 0 q8 10 16 0 q8 10 16 0 q7 8 11 1 V82 q0-2-3-2 H27 q-3 0-3 2z" fill="#fff5f9"/>
-          <circle cx="38" cy="98" r="2.2" fill="#ffc94d"/>
-          <circle cx="56" cy="102" r="2.2" fill="#9b5de5"/>
-          <circle cx="74" cy="97" r="2.2" fill="#43c6ac"/>
-          <circle cx="92" cy="101" r="2.2" fill="#f2559a"/>
+          <!-- clouds, warm-lit underside -->
+          <g class="cl cl3" opacity=".7">
+            <ellipse cx="46" cy="34" rx="27" ry="10" fill="#fde4d8"/><ellipse cx="64" cy="29" rx="18" ry="12" fill="#fff1e6"/>
+          </g>
+          <g class="cl cl2" opacity=".8">
+            <ellipse cx="156" cy="26" rx="28" ry="10" fill="#fbdcd0"/><ellipse cx="176" cy="21" rx="19" ry="13" fill="#fff1e6"/>
+          </g>
+          <g class="cl cl1" opacity=".9">
+            <ellipse cx="76" cy="66" rx="30" ry="10" fill="#fcd9c6"/><ellipse cx="98" cy="61" rx="20" ry="13" fill="#fff0e2"/>
+          </g>
 
-          <!-- plate -->
-          <rect x="16" y="110" width="98" height="7" rx="3.5" fill="#fdfaf7"/>
-          <rect x="16" y="110" width="98" height="3" rx="1.5" fill="#fff"/>
+          <!-- distant ridge -->
+          <path d="M0 122 q34 -26 62 -10 q22 12 42 -6 q26 -22 54 -4 q30 20 58 -8 q22 -22 44 -6 V200 H0z" fill="url(#hillFar)" opacity=".75"/>
+
+          <!-- lake -->
+          <g clip-path="url(#lakeClip)">
+            <rect x="0" y="132" width="260" height="68" fill="url(#lakeG)"/>
+            <ellipse cx="196" cy="140" rx="17" ry="4" fill="#fff2cf" opacity=".65"/>
+            <g class="ripple" stroke="#fff4e0" stroke-width="1.2" fill="none" opacity=".55" stroke-linecap="round">
+              <path d="M172 150 q10 -3 20 0 q10 3 20 0"/>
+              <path d="M164 160 q12 -3 24 0 q12 3 24 0"/>
+              <path d="M178 170 q10 -3 20 0 q10 3 20 0"/>
+            </g>
+          </g>
+
+          <!-- mid hills -->
+          <path d="M0 142 q46 -24 96 -6 q54 20 104 -6 q34 -16 60 -2 V200 H0z" fill="url(#hillMid)"/>
+          <!-- near bank -->
+          <path d="M0 168 q56 -20 116 0 q60 20 144 -8 V200 H0z" fill="url(#hillNear)"/>
+
+          <!-- trees on the ridge -->
+          <g class="trees">
+            <g transform="translate(24,0)">
+              <rect x="-1.5" y="140" width="3" height="16" fill="#4a3626"/>
+              <ellipse cx="0" cy="136" rx="11" ry="13" fill="#3f7345"/>
+              <ellipse cx="-3" cy="132" rx="7" ry="8" fill="#4d8a52"/>
+            </g>
+            <g transform="translate(44,6)">
+              <rect x="-1.2" y="140" width="2.4" height="13" fill="#4a3626"/>
+              <ellipse cx="0" cy="137" rx="8" ry="10" fill="#356a3d"/>
+            </g>
+            <g transform="translate(236,4)">
+              <rect x="-1.5" y="142" width="3" height="15" fill="#4a3626"/>
+              <ellipse cx="0" cy="138" rx="10" ry="12" fill="#3f7345"/>
+              <ellipse cx="3" cy="134" rx="6" ry="7" fill="#4d8a52"/>
+            </g>
+          </g>
+
+          <!-- foreground grass and flowers -->
+          <g stroke="#2f5c38" stroke-width="1.6" stroke-linecap="round" fill="none">
+            <path class="gr" d="M10 200 q3 -14 0 -21"/><path class="gr g2" d="M22 200 q4 -12 1 -18"/>
+            <path class="gr g3" d="M34 200 q-3 -13 0 -19"/><path class="gr" d="M226 200 q3 -13 0 -19"/>
+            <path class="gr g2" d="M240 200 q-4 -12 -1 -18"/><path class="gr g3" d="M252 200 q3 -14 0 -20"/>
+          </g>
+          <g class="bloom">
+            <circle cx="16" cy="178" r="2.4" fill="#fff0a8"/><circle cx="16" cy="178" r=".9" fill="#e8a33c"/>
+            <circle cx="246" cy="180" r="2.4" fill="#ffd9e4"/><circle cx="246" cy="180" r=".9" fill="#e0357f"/>
+            <circle cx="40" cy="188" r="2" fill="#ffd9e4"/>
+            <circle cx="222" cy="190" r="2" fill="#fff0a8"/>
+          </g>
+
+          <!-- top vignette so the card edge reads softly -->
+          <rect width="260" height="200" fill="url(#vign)"/>
+
+          <!-- portrait -->
+          <g class="frame">
+            <circle cx="130" cy="90" r="51" fill="#fffaf0" opacity=".45"/>
+            <circle cx="130" cy="90" r="47" fill="#fffdf7"/>
+            <g clip-path="url(#faceClip)">
+              <!-- ballroom backdrop -->
+              <rect x="86" y="46" width="88" height="88" fill="url(#ballG)"/>
+              <circle cx="130" cy="118" r="34" fill="#fff3d0" opacity=".38"/>
+
+              <!-- fairytale princess -->
+              <g class="princess">
+                <!-- gown -->
+                <path d="M124 92 q-5 8 -14 22 q-8 12 -10 22 h60 q-2 -10 -10 -22 q-9 -14 -14 -22z" fill="#8fc0e8"/>
+                <path d="M127 92 q-3 8 -9 22 q-5 12 -6 22 h36 q-1 -10 -6 -22 q-6 -14 -9 -22z" fill="#bfdcf5"/>
+                <path d="M108 124 q22 8 44 0 q-2 6 -3 12 h-38 q-1 -6 -3 -12z" fill="#dcecfb" opacity=".85"/>
+                <!-- sash -->
+                <path d="M122 92 h16 l-1 4 h-14z" fill="#e8f4ff"/>
+                <!-- bodice -->
+                <path d="M123 78 q7 -3 14 0 l-1 14 h-12z" fill="#a8cfee"/>
+                <path d="M123 78 q7 -3 14 0 l-.6 4 q-6.4 -2.6 -12.8 0z" fill="#eaf5ff"/>
+                <!-- arms with long gloves -->
+                <path d="M122 81 q-8 6 -9 15" stroke="#fdfaf4" stroke-width="4" fill="none" stroke-linecap="round"/>
+                <path d="M138 81 q8 6 9 15" stroke="#fdfaf4" stroke-width="4" fill="none" stroke-linecap="round"/>
+                <!-- neck + head -->
+                <rect x="128.4" y="70" width="3.2" height="6" fill="#f0c9a8"/>
+                <circle cx="130" cy="65" r="7.4" fill="#f5d3b8"/>
+                <!-- face -->
+                <path d="M126.6 64.4 q1.6 -2 3.2 0" stroke="#5a4032" stroke-width="1.1" fill="none" stroke-linecap="round"/>
+                <path d="M130.2 64.4 q1.6 -2 3.2 0" stroke="#5a4032" stroke-width="1.1" fill="none" stroke-linecap="round"/>
+                <ellipse cx="125.6" cy="67.4" rx="1.7" ry="1" fill="#f2a0ac" opacity=".7"/>
+                <ellipse cx="134.4" cy="67.4" rx="1.7" ry="1" fill="#f2a0ac" opacity=".7"/>
+                <path d="M128.4 68.6 q1.6 1.8 3.2 0" stroke="#c4626e" stroke-width="1" fill="none" stroke-linecap="round"/>
+                <!-- hair, swept up into a bun -->
+                <path d="M122.6 63 q.8 -9.4 7.4 -9.4 q6.6 0 7.4 9.4 q-2.8 -4.6 -7.4 -4.6 q-4.6 0 -7.4 4.6z" fill="#e8c274"/>
+                <circle cx="130" cy="52" r="5.2" fill="#f2d38a"/>
+                <path d="M122 65 q-2.6 3.6 -1 8.4 q2.6 -3.6 2.6 -7.4z" fill="#e8c274"/>
+                <path d="M138 65 q2.6 3.6 1 8.4 q-2.6 -3.6 -2.6 -7.4z" fill="#e8c274"/>
+                <!-- tiara -->
+                <path d="M124.6 55.6 l1.8 -3.6 l1.8 2.8 l1.8 -4.6 l1.8 4.6 l1.8 -2.8 l1.8 3.6z" fill="#ffd166"/>
+                <circle cx="130" cy="50.4" r="1.2" fill="#fff6d8"/>
+              </g>
+
+              <!-- her portrait sits on top; the drawn princess above is the
+                   fallback if the file is ever missing -->
+              <image id="herPhoto" href="/her.png" x="86" y="46" width="88" height="88"
+                     preserveAspectRatio="xMidYMid slice"/>
+
+              <!-- sparkles -->
+              <g class="sparkle" fill="#fff6d8">
+                <path class="sp1" d="M104 70 l1.6 4 4 1.6 -4 1.6 -1.6 4 -1.6-4 -4-1.6 4-1.6z"/>
+                <path class="sp2" d="M156 62 l1.4 3.6 3.6 1.4 -3.6 1.4 -1.4 3.6 -1.4-3.6 -3.6-1.4 3.6-1.4z"/>
+                <path class="sp3" d="M160 100 l1.2 3 3 1.2 -3 1.2 -1.2 3 -1.2-3 -3-1.2 3-1.2z"/>
+                <path class="sp4" d="M100 106 l1.2 3 3 1.2 -3 1.2 -1.2 3 -1.2-3 -3-1.2 3-1.2z"/>
+              </g>
+            </g>
+            <circle cx="130" cy="90" r="44" fill="none" stroke="#f0d9a8" stroke-width="2.6"/>
+            <circle cx="130" cy="90" r="47" fill="none" stroke="#fffdf7" stroke-width="3"/>
+            <circle cx="130" cy="90" r="49.5" fill="none" stroke="#e8b8c8" stroke-width="1.2" opacity=".8"/>
+          </g>
+
+          <!-- fireflies -->
+          <g fill="#fff6cc">
+            <circle class="seed"    cx="52"  cy="160" r="1.9"/>
+            <circle class="seed s2" cx="196" cy="176" r="1.7"/>
+            <circle class="seed s3" cx="92"  cy="184" r="1.9"/>
+            <circle class="seed s4" cx="216" cy="150" r="1.6"/>
+            <circle class="seed s5" cx="30"  cy="150" r="1.5"/>
+          </g>
         </g>
       </svg>
       <h1>🎂 Will you give me a birthday treat? 🎂</h1>
@@ -446,7 +715,7 @@
         <input id="shareUrl" readonly />
         <button id="copyBtn">copy</button>
       </div> -->
-      <div class="foot">made with ♥ · not on Replit</div>
+      <!-- <div class="foot">made with ♥ · not on Replit</div> -->
     </section>
 
   </div>
@@ -528,12 +797,51 @@ setInterval(drop, 620);
 setInterval(balloon, 3400);
 for (let i = 0; i < 5; i++) setTimeout(drop, i * 160);
 
+/* ---------------- portrait: fade in only once it has loaded ---------------- */
+(() => {
+  const slot = document.getElementById('herPhoto');
+  if (!slot) return;
+  const probe = new Image();
+  probe.onload  = () => slot.classList.add('ready');  // got it — fade her in
+  probe.onerror = () => slot.remove();                // missing — keep the drawn princess
+  probe.src = '/her.png';
+})();
+
+/* ---------------- flower blast ---------------- */
+const blastBox = document.getElementById('blast');
+const FLOWERS = ['🌸','🌺','🌼','🌷','💐','🌻','🏵️','🌹'];
+
+function flowerBlast(count = 46){
+  if (CALM) return;
+  const reach = Math.max(innerWidth, innerHeight) * 0.62;
+  for (let i = 0; i < count; i++){
+    const f = document.createElement('div');
+    f.className = 'flower';
+    f.textContent = FLOWERS[Math.floor(Math.random() * FLOWERS.length)];
+    // even spread around the circle, with a little jitter so it isn't a clock face
+    const angle = (i / count) * Math.PI * 2 + (Math.random() - .5) * 0.5;
+    const dist  = reach * (0.35 + Math.random() * 0.65);
+    f.style.setProperty('--dx',  Math.cos(angle) * dist + 'px');
+    f.style.setProperty('--dy',  Math.sin(angle) * dist + 'px');
+    f.style.setProperty('--sz',  (18 + Math.random() * 26) + 'px');
+    f.style.setProperty('--rot', (Math.random() * 720 - 360) + 'deg');
+    f.style.setProperty('--end', (0.5 + Math.random() * 0.7).toFixed(2));
+    f.style.setProperty('--dur', (1.1 + Math.random() * 1.1).toFixed(2) + 's');
+    blastBox.appendChild(f);
+    setTimeout(() => f.remove(), 2600);
+  }
+}
+
 /* ---------------- screens ---------------- */
+// s0 is the greeting, so it sits outside the numbered flow.
 const ORDER = ['s1','s2','s3','s4','s5'];
 const stepDots = [...document.querySelectorAll('#steps i')];
+const stepsBox = document.getElementById('steps');
 
 function paintSteps(id){
   const i = ORDER.indexOf(id);
+  stepsBox.style.visibility = i === -1 ? 'hidden' : 'visible';
+  if (i === -1) return;
   stepDots.forEach((d, n) => {
     d.className = n < i ? 'done' : (n === i ? 'now' : '');
   });
@@ -560,7 +868,25 @@ function go(id){
     show();
   }
 }
-paintSteps('s1');
+paintSteps('s0');
+
+/* ---------------- screen 0: the greeting ---------------- */
+// Personalise the wish if the link carries ?to=
+if (answers.name) {
+  document.getElementById('wishName').textContent = answers.name + ' 🎂';
+}
+
+// Flowers burst as soon as the page opens, and again a beat later.
+flowerBlast(46);
+setTimeout(() => flowerBlast(30), 700);
+
+document.getElementById('introBtn').onclick = () => {
+  track('greeting_done');
+  flowerBlast(38);
+  burst(120);
+  startMusic();          // her tap is the gesture browsers need to allow audio
+  go('s1');
+};
 document.querySelectorAll('[data-go]').forEach(b => b.onclick = () => {
   if (b.dataset.go === 's3') track('intro_done');
   go(b.dataset.go);
@@ -570,7 +896,28 @@ document.querySelectorAll('[data-go]').forEach(b => b.onclick = () => {
 const noBtn = document.getElementById('noBtn');
 const yesBtn = document.getElementById('yesBtn');
 let dodges = 0;
-const nopes = ['no 🥀','are you sure?','really??','think again 🥺','last chance!','pretty please','my heart 💔','you cant click me','ok this is rude','😭😭😭'];
+// The "no" button rewrites itself every time it runs away.
+const nopes = [
+  'no 🥲',
+  'are you sure? 🤨',
+  'really? 😐',
+  'think again 🥺',
+  'it is your BIRTHDAY 🎂',
+  'just one treat 🙏',
+  'biriyani is right there 🍛',
+  'I asked so nicely 🥹',
+  'nice try 😏',
+  'catch me first 🏃',
+  'you cannot click me 😌',
+  'still no? 😶',
+  'do not do this to me 😩',
+  'please da 🙏',
+  'treat pannu da 😤',
+  'ok this is rude 😑',
+  'I will remember this 📝',
+  'no wishes next year 🚫',
+  'last chance ⏳'
+];
 
 function dodge(){
   const row = noBtn.parentElement.getBoundingClientRect();
@@ -580,7 +927,7 @@ function dodge(){
   noBtn.style.left = x + 'px';
   noBtn.style.top  = y + 'px';
   noBtn.textContent = nopes[Math.min(++dodges, nopes.length - 1)];
-  if (dodges === 1 || dodges === 5 || dodges === 10) track('no_dodge', 'dodge #' + dodges);
+  if ([1, 5, 10, 20].includes(dodges)) track('no_dodge', 'dodge #' + dodges);
   const scale = Math.min(1 + dodges * 0.13, 2.3);
   yesBtn.style.transform = `scale(${scale})`;
   if (dodges > 3) noBtn.style.transform = `scale(${Math.max(0.55, 1 - dodges*0.06)})`;
@@ -589,7 +936,7 @@ noBtn.addEventListener('mouseenter', dodge);
 noBtn.addEventListener('touchstart', e => { e.preventDefault(); dodge(); }, {passive:false});
 noBtn.addEventListener('click', e => { e.preventDefault(); dodge(); });
 
-yesBtn.onclick = () => { track('yes', 'after ' + dodges + ' dodges'); burst(140); startMusic(); go('s2'); };
+yesBtn.onclick = () => { track('yes', 'after ' + dodges + ' dodges'); burst(140); flowerBlast(26); go('s2'); };
 
 /* ---------------- screen 3: when ---------------- */
 const dateIn = document.getElementById('dateIn');

@@ -20,7 +20,8 @@ const EVENTS_FILE = path.join(DATA_DIR, 'events.jsonl');
 
 /** The funnel, in order. Anything not in this list still gets stored. */
 const STEPS = [
-  ['visit',       'Opened the page'],
+  ['visit',        'Opened the page'],
+  ['greeting_done','Past the birthday wish'],
   ['no_dodge',    'Tried to click "no"'],
   ['yes',         'Clicked YES'],
   ['intro_done',  'Past the surprise screen'],
