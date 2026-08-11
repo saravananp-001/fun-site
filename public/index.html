@@ -5,22 +5,33 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <!-- personal page: keep it out of search results -->
 <meta name="robots" content="noindex, nofollow, noarchive, noimageindex" />
-<!-- Spoiler-free link preview.
-     Chat apps read these tags, NOT the page body — so keep them vague and
-     never name the occasion or the person. No og:image on purpose: an image
-     card would give the game away before she taps. -->
+<!-- Link preview shown in WhatsApp/Instagram.
+     Chat apps read these tags, NOT the page body — keep the text vague and
+     never name the occasion. __OG_IMAGE__ / __OG_URL__ are swapped for
+     absolute URLs by server.js, because chat apps reject relative paths.
+     Naming the image explicitly also stops WhatsApp guessing and grabbing
+     the cats gif instead. -->
 <title>open this...</title>
 <meta property="og:title" content="oru surprice..." />
 <meta property="og:description" content="open pannu da 👀" />
 <meta property="og:type" content="website" />
-<meta name="twitter:card" content="summary" />
+<meta property="og:image" content="__OG_IMAGE__" />
+<meta property="og:image:secure_url" content="__OG_IMAGE__" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:width" content="560" />
+<meta property="og:image:height" content="560" />
+<meta property="og:image:alt" content="a portrait" />
+<meta property="og:url" content="__OG_URL__" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="__OG_IMAGE__" />
 <meta name="twitter:title" content="oru surprice..." />
 <meta name="twitter:description" content="open pannu da 👀" />
 <meta name="theme-color" content="#e0357f" />
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👀</text></svg>" />
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
-<!-- fetch the celebration gif early so it plays instantly when the overlay opens -->
-<link rel="preload" as="image" href="/public/her.png" />
+<!-- warm the cache: her portrait now, the celebration gif for later -->
+<link rel="preload" as="image" href="/her.png" />
+<link rel="preload" as="image" href="/best-friends-bestie.gif" />
 <style>
   :root{
     --bg1:#fbe9ef; --bg2:#f6dce6; --bg3:#fdf1f4;

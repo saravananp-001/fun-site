@@ -12,8 +12,31 @@ const HOST = process.env.HOST || '127.0.0.1';
 const ADMIN_KEY = process.env.ADMIN_KEY || '';
 
 app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));
 app.set('trust proxy', true);
+
+/* ---------- serve index.html with absolute link-preview URLs ----------
+ * WhatsApp, Instagram and Twitter all reject relative og:image paths, and the
+ * site may be reached by IP, duckdns name or through a proxy — so the absolute
+ * URL is built per request from the Host header rather than hardcoded.
+ */
+const fs = require('fs');
+const INDEX = path.join(__dirname, 'public', 'index.html');
+
+app.get('/', (req, res, next) => {
+  fs.readFile(INDEX, 'utf8', (err, html) => {
+    if (err) return next();
+    // Vercel and some proxies pass the public hostname in X-Forwarded-Host;
+    // nginx (per deploy/nginx-treat.conf) already rewrites Host itself.
+    const host = req.get('x-forwarded-host') || req.get('host');
+    const base = `${req.protocol}://${host}`;
+    res.type('html').send(
+      html.replace(/__OG_IMAGE__/g, `${base}/her.png`)
+          .replace(/__OG_URL__/g, `${base}/`)
+    );
+  });
+});
+
+app.use(express.static(path.join(__dirname, 'public')));
 
 const meta = (req) => ({
   user_agent: (req.get('user-agent') || '').slice(0, 300),
